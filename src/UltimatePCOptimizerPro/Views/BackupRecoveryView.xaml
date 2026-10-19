@@ -1,0 +1,89 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.BackupRecoveryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="0,0,12,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <WrapPanel>
+                    <Button Content="Undo last optimization" Command="{Binding UndoLastCommand}" Style="{StaticResource PrimaryButton}" />
+                    <Button Content="Restore all original registry values" Command="{Binding RestoreAllRegistryCommand}" />
+                    <Button Content="Export all backups (.zip)" Command="{Binding ExportAllCommand}" />
+                    <Button Content="Open Windows System Restore" Command="{Binding OpenSystemRestoreCommand}" />
+                    <Button Content="&#xE72C;" FontFamily="{StaticResource IconFont}" Command="{Binding ReloadCommand}" />
+                </WrapPanel>
+                <TextBlock Text="{Binding Summary}" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Card}" Margin="0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Operations" Style="{StaticResource H2}" />
+                    <ListBox ItemsSource="{Binding Operations}" SelectedItem="{Binding Selected}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Label}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                        <Border Style="{StaticResource Badge}" HorizontalAlignment="Right" Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=soft}">
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BadgeText}" Foreground="{Binding Status, Converter={StaticResource StatusBrush}}" />
+                                        </Border>
+                                    </Grid>
+                                    <TextBlock Text="{Binding StartedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Style="{StaticResource Caption}" />
+                                    <TextBlock Style="{StaticResource Caption}"><Run Text="Restore point: " /><Run Text="{Binding RestorePoint.Status, Mode=OneWay}" /><Run Text=" · active changes: " /><Run Text="{Binding AppliedCount, Mode=OneWay}" /></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}" Margin="0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Recorded changes" Style="{StaticResource H2}" />
+                        <TextBlock Text="{Binding Details}" Style="{StaticResource Mono}" Margin="0,0,0,10" />
+                        <WrapPanel Margin="0,0,0,10">
+                            <Button Content="Restore selected" Command="{Binding RestoreSelectedCommand}" Style="{StaticResource PrimaryButton}" />
+                            <Button Content="Restore whole operation" Command="{Binding RestoreOperationCommand}" />
+                            <Button Content="Export this backup" Command="{Binding ExportSelectedCommand}" />
+                            <Button Content="Open backup folder" Command="{Binding OpenFolderCommand}" />
+                        </WrapPanel>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding Changes}" IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="" Width="36">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanRestore}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Change" Binding="{Binding Title}" Width="220" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Location" Binding="{Binding Target}" Width="*" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Original" Binding="{Binding Original}" Width="160" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Applied" Binding="{Binding Applied}" Width="160" IsReadOnly="True" />
+                            <DataGridTemplateColumn Header="Status" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Badge}" Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=soft}" ToolTip="{Binding Error}">
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BadgeText}" Foreground="{Binding Status, Converter={StaticResource StatusBrush}}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Rollback" Binding="{Binding RollbackText}" Width="110" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

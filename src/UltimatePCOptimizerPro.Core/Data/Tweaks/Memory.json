@@ -1,0 +1,94 @@
+[
+  {
+    "id": "mem.backgroundapps.disable.win10",
+    "name": "Stop Store apps running in the background (Windows 10)",
+    "category": "Memory",
+    "description": "Turns off 'Let apps run in the background' for this user.",
+    "mechanism": "Sets GlobalUserDisabled=1 (HKCU\\...\\BackgroundAccessApplications) and BackgroundAppGlobalToggle=0 (HKCU\\...\\Search), the values used by Settings › Privacy › Background apps on Windows 10.",
+    "benefit": "Store apps no longer wake up to sync or update live tiles, reducing background CPU, RAM and network use.",
+    "drawback": "Store apps (Mail, Calendar, Phone Link, Weather) won't sync or notify until opened.",
+    "recommendedFor": "Low-end and mid-range Windows 10 PCs.",
+    "evidence": "Documented Settings behaviour. Windows 11 replaced the global switch with per-app settings, so this tweak is limited to Windows 10.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "maxBuild": 19045 },
+    "tiers": [ "LowEnd", "MidRange" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications", "name": "GlobalUserDisabled", "kind": "DWord", "value": "1" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "BackgroundAppGlobalToggle", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "mem.backgroundapps.policy",
+    "name": "Policy: deny background execution for Store apps",
+    "category": "Memory",
+    "description": "Applies the privacy policy 'Let Windows apps run in the background' = Force Deny for all users.",
+    "mechanism": "Sets LetAppsRunInBackground=2 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy.",
+    "benefit": "Works on Windows 10 and 11; packaged apps cannot run background tasks.",
+    "drawback": "Affects all users. Notifications and sync of packaged apps (Phone Link, Mail, new Teams, Widgets) may stop until the app is opened. Settings shows 'managed by your organization'.",
+    "recommendedFor": "Low-end PCs dedicated to gaming.",
+    "evidence": "Documented AppPrivacy Group Policy.",
+    "risk": "Medium",
+    "restart": "SignOut",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy", "name": "LetAppsRunInBackground", "kind": "DWord", "value": "2" }
+    ]
+  },
+  {
+    "id": "mem.edge.startupboost.disable",
+    "name": "Disable Microsoft Edge Startup Boost",
+    "category": "Memory",
+    "description": "Stops Edge from pre-launching at sign-in and staying resident after it is closed.",
+    "mechanism": "Sets the Edge policy StartupBoostEnabled=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge.",
+    "benefit": "Frees RAM (typically 100–300 MB) and removes Edge processes from sign-in.",
+    "drawback": "Edge opens slightly slower. Edge shows 'Your browser is managed by your organization'.",
+    "recommendedFor": "PCs where Edge is not the main browser, or with 16 GB RAM or less.",
+    "evidence": "Microsoft Edge policy documentation (StartupBoostEnabled).",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "requiresSoftware": "Microsoft Edge" },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "StartupBoostEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "mem.edge.backgroundmode.disable",
+    "name": "Edge: don't keep running after the browser is closed",
+    "category": "Memory",
+    "description": "Prevents Edge extensions and apps from running in the background after the last window closes.",
+    "mechanism": "Sets the Edge policy BackgroundModeEnabled=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge.",
+    "benefit": "Edge processes exit when you close the browser, freeing RAM and CPU for games.",
+    "drawback": "Extensions that run in the background (e.g. some password managers) stop when Edge is closed. Edge shows 'managed by your organization'.",
+    "recommendedFor": "Gaming PCs that use Edge occasionally.",
+    "evidence": "Microsoft Edge policy documentation (BackgroundModeEnabled).",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "requiresSoftware": "Microsoft Edge" },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "BackgroundModeEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "mem.chrome.backgroundmode.disable",
+    "name": "Chrome: don't keep running after the browser is closed",
+    "category": "Memory",
+    "description": "Turns off Chrome's 'Continue running background apps when Google Chrome is closed'.",
+    "mechanism": "Sets the Chrome policy BackgroundModeEnabled=0 under HKLM\\SOFTWARE\\Policies\\Google\\Chrome.",
+    "benefit": "Chrome fully exits when closed, freeing RAM and CPU.",
+    "drawback": "Background extensions/apps stop when Chrome is closed. Chrome shows 'Managed by your organization'.",
+    "recommendedFor": "Chrome users who game on the same PC.",
+    "evidence": "Chrome Enterprise policy list (BackgroundModeEnabled).",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "requiresSoftware": "Google Chrome" },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Google\\Chrome", "name": "BackgroundModeEnabled", "kind": "DWord", "value": "0" }
+    ]
+  }
+]

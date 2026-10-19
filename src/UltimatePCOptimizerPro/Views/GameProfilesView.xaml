@@ -1,0 +1,95 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.GameProfilesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="0,0,12,12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="14" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border Style="{StaticResource Card}" Margin="0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="Detected games" Style="{StaticResource H2}" />
+                    <WrapPanel Margin="0,0,0,8">
+                        <Button Content="Detect" Command="{Binding DetectCommand}" Style="{StaticResource SmallButton}" />
+                        <Button Content="Add custom game" Command="{Binding AddCustomCommand}" Style="{StaticResource SmallButton}" />
+                    </WrapPanel>
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Caption}" />
+                </StackPanel>
+                <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource Caption}" Margin="0,8,0,0"
+                           Text="Supported profiles: VALORANT, Fortnite, Counter-Strike 2, Apex Legends, PUBG, Call of Duty, Minecraft (Java/Bedrock), plus any custom game." />
+                <ListBox ItemsSource="{Binding Games}" SelectedItem="{Binding Selected}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                    <Border Style="{StaticResource Badge}" Background="{StaticResource SuccessSoftBrush}" Margin="8,0,0,0" Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="Running" Style="{StaticResource BadgeText}" Foreground="{StaticResource SuccessBrush}" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="{Binding DetectedVia}" Style="{StaticResource Caption}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel Visibility="{Binding Selected, Converter={StaticResource NullToVis}}">
+                <Border Style="{StaticResource Card}" Background="{StaticResource HeroGradientBrush}">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource H1}" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Launch" Command="{Binding LaunchCommand}" Style="{StaticResource PrimaryButton}" />
+                                <Button Content="Benchmark this game" Command="{Binding BenchmarkCommand}" />
+                                <Button Content="Remove custom game" Command="{Binding RemoveCustomCommand}" Style="{StaticResource GhostButton}"
+                                        Visibility="{Binding Selected.IsCustom, Converter={StaticResource BoolToVis}}" />
+                            </StackPanel>
+                        </Grid>
+                        <ItemsControl ItemsSource="{Binding CurrentState}" ItemTemplate="{StaticResource InfoRowTemplate}" Margin="0,12,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Per-game Windows settings" Style="{StaticResource H2}" />
+                        <TextBlock Style="{StaticResource Body}" Margin="0,0,0,10"
+                                   Text="These use documented Windows mechanisms only (Graphics settings, Compatibility tab, Image File Execution Options › PerfOptions). The game's files and process are never modified. Each change goes through the restore-point and backup workflow." />
+                        <WrapPanel>
+                            <Button Content="GPU preference: High performance" Command="{Binding GpuHighPerformanceCommand}" ToolTip="Same as Settings › Display › Graphics › app › High performance. Important on laptops with hybrid graphics." />
+                            <Button Content="CPU priority: Above normal" Command="{Binding PriorityCommand}" CommandParameter="AboveNormal" ToolTip="Applied by Windows when the game starts. Realtime is never offered." />
+                            <Button Content="CPU priority: High" Command="{Binding PriorityCommand}" CommandParameter="High" />
+                            <Button Content="Disable fullscreen optimizations" Command="{Binding DisableFsoCommand}" ToolTip="Only if the game has alt-tab or stutter issues; usually not beneficial on current Windows." />
+                            <Button Content="Restore this game's settings" Command="{Binding RestoreGameSettingsCommand}" Style="{StaticResource GhostButton}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="14" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Recommendations" Style="{StaticResource H2}" />
+                            <ItemsControl ItemsSource="{Binding Recommendations}" ItemTemplate="{StaticResource BulletTemplate}" />
+                            <TextBlock Text="No curated recommendations for custom games — use the Benchmark Center to test settings." Style="{StaticResource Caption}"
+                                       Visibility="{Binding Recommendations.Count, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding TierSettingsTitle}" Style="{StaticResource H2}" />
+                            <ItemsControl ItemsSource="{Binding TierSettings}" ItemTemplate="{StaticResource BulletTemplate}" />
+                            <TextBlock Text="In-game settings are changed by you inside the game; this app never edits game configuration files." Style="{StaticResource Caption}" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

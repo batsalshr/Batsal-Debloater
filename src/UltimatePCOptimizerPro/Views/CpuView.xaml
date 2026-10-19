@@ -1,0 +1,101 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.CpuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views"
+             xmlns:c="clr-namespace:UltimatePCOptimizerPro.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Processor" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                        <TextBlock Text="CORE TOPOLOGY" Style="{StaticResource H3}" Margin="0,12,0,6" />
+                        <ItemsControl ItemsSource="{Binding Cores}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="58" Height="46" CornerRadius="6" Margin="0,0,6,6" BorderThickness="1" BorderBrush="{StaticResource BorderBrightBrush}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsEfficiency}" Value="True">
+                                                        <Setter Property="Background" Value="{StaticResource PurpleSoftBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding Kind}" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{StaticResource TextBrush}" />
+                                            <TextBlock Style="{StaticResource Caption}" HorizontalAlignment="Center"><Run Text="{Binding Threads, Mode=OneWay}" /><Run Text="T" /></TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Live utilisation and clocks" Style="{StaticResource H2}" />
+                        <TextBlock Text="{Binding LiveText}" Style="{StaticResource Body}" />
+                        <TextBlock Text="USAGE %" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <c:SparklineChart Values="{Binding UsageHistory}" Maximum="100" Height="70" Stroke="{StaticResource AccentBrush}" ShowGrid="True" Unit="%" />
+                        <TextBlock Text="EFFECTIVE CLOCK (MHz)" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <c:SparklineChart Values="{Binding ClockHistory}" Height="70" Stroke="{StaticResource CyanBrush}" ShowGrid="True" Unit=" MHz" />
+                        <TextBlock Text="THROTTLING" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <TextBlock Text="{Binding ThrottleText}" Style="{StaticResource Value}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Power plans" Style="{StaticResource H2}" />
+                        <Button Content="Power Options" Command="{Binding OpenPowerOptionsCommand}" Style="{StaticResource SmallButton}" HorizontalAlignment="Right" VerticalAlignment="Top" />
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding PowerPlans}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Style="{StaticResource Value}" VerticalAlignment="Center"><Run Text="{Binding Name, Mode=OneWay}" /><Run Text="   " /><Run Text="{Binding Id, Mode=OneWay}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" /></TextBlock>
+                                    <Button Grid.Column="1" Content="Activate" Style="{StaticResource SmallButton}" Command="{Binding DataContext.ActivatePlanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}, ConverterParameter=invert}" />
+                                    <Border Grid.Column="1" Style="{StaticResource Badge}" Background="{StaticResource SuccessSoftBrush}" Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock Text="Active" Style="{StaticResource BadgeText}" Foreground="{StaticResource SuccessBrush}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="CPU recommendations" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding Guidance}" ItemTemplate="{StaticResource BulletTemplate}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="CPU and power tweaks" Style="{StaticResource H2}" />
+                    <v:TweakListView DataContext="{Binding Tweaks}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

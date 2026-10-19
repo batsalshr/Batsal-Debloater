@@ -1,0 +1,101 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.TierAnalysisView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Border Style="{StaticResource Card}" Background="{StaticResource HeroGradientBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="DETECTED PC TIER" Style="{StaticResource H3}" />
+                        <TextBlock Text="{Binding TierText}" FontSize="26" FontWeight="Bold" Foreground="{StaticResource AccentGradientBrush}" Margin="0,4,0,0" />
+                        <TextBlock Style="{StaticResource Body}" Margin="0,4,0,0"><Run Text="Weighted score " /><Run Text="{Binding Score, Mode=OneWay, StringFormat={}{0:0.#}}" Foreground="{StaticResource TextBrush}" /><Run Text=" / 100" /></TextBlock>
+                        <ProgressBar Value="{Binding Score, Mode=OneWay}" Maximum="100" Width="420" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                        <TextBlock Text="{Binding Limiter}" Style="{StaticResource Body}" Foreground="{StaticResource CyanBrush}" Margin="0,10,0,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Width="300">
+                        <TextBlock Text="Target workload (what-if)" Style="{StaticResource H3}" Margin="0,0,0,6" />
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding Resolution}" ItemStringFormat="{}{0}p" MinWidth="100" Margin="0,0,8,0" />
+                            <ComboBox ItemsSource="{Binding FpsTargets}" SelectedItem="{Binding TargetFps}" ItemStringFormat="{}{0} FPS" MinWidth="110" />
+                        </StackPanel>
+                        <TextBlock Text="Classification override" Style="{StaticResource H3}" Margin="0,14,0,6" />
+                        <ComboBox ItemsSource="{Binding OverrideOptions}" SelectedItem="{Binding OverrideChoice}" />
+                        <Button Content="Generate optimizations for this tier" Command="{Binding OptimizeCommand}" Style="{StaticResource PrimaryButton}" Margin="0,14,0,0" HorizontalAlignment="Left" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Why this classification" Style="{StaticResource H2}" />
+                            <ItemsControl ItemsSource="{Binding Scores}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,0,0,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="80" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Component}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                                <ProgressBar Grid.Column="1" Value="{Binding Score, Mode=OneWay}" Maximum="100" Margin="8,0" VerticalAlignment="Center" />
+                                                <TextBlock Grid.Column="2" Style="{StaticResource Value}"><Run Text="{Binding Score, Mode=OneWay, StringFormat={}{0:0}}" /><Run Text=" × " Foreground="{StaticResource TextMutedBrush}" /><Run Text="{Binding Weight, Mode=OneWay, StringFormat={}{0:P0}}" Foreground="{StaticResource TextMutedBrush}" /></TextBlock>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Basis}" Style="{StaticResource Caption}" Margin="88,3,0,0" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding Reasons}" ItemTemplate="{StaticResource BulletTemplate}" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Recommended optimization priorities" Style="{StaticResource H2}" />
+                            <ItemsControl ItemsSource="{Binding Priorities}" ItemTemplate="{StaticResource BulletTemplate}" />
+                            <TextBlock Text="Expected tradeoffs" Style="{StaticResource H2}" Margin="0,14,0,10" />
+                            <ItemsControl ItemsSource="{Binding Tradeoffs}" ItemTemplate="{StaticResource BulletTemplate}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Detected bottlenecks" Style="{StaticResource H2}" />
+                            <ItemsControl ItemsSource="{Binding Bottlenecks}" ItemTemplate="{StaticResource BottleneckTemplate}" />
+                            <TextBlock Text="No bottlenecks detected." Style="{StaticResource Caption}" Visibility="{Binding Bottlenecks.Count, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Visibility="{Binding IsLaptop, Converter={StaticResource BoolToVis}}">
+                        <StackPanel>
+                            <TextBlock Text="Gaming laptop" Style="{StaticResource H2}" />
+                            <TextBlock Text="{Binding PowerText}" Style="{StaticResource Body}" Margin="0,0,0,10" />
+                            <TextBlock Text="PLUGGED-IN GAMING" Style="{StaticResource H3}" Margin="0,0,0,6" />
+                            <ItemsControl ItemsSource="{Binding LaptopPluggedIn}" ItemTemplate="{StaticResource BulletTemplate}" />
+                            <TextBlock Text="ON BATTERY" Style="{StaticResource H3}" Margin="0,12,0,6" />
+                            <ItemsControl ItemsSource="{Binding LaptopBattery}" ItemTemplate="{StaticResource BulletTemplate}" />
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Visibility="{Binding IsLaptop, Converter={StaticResource BoolToVis}, ConverterParameter=invert}">
+                        <StackPanel>
+                            <TextBlock Text="Power" Style="{StaticResource H2}" />
+                            <TextBlock Text="{Binding PowerText}" Style="{StaticResource Body}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,143 @@
+[
+  {
+    "id": "gaming.gamemode.enable",
+    "name": "Enable Game Mode",
+    "category": "Gaming",
+    "description": "Turns on Windows Game Mode (Settings › Gaming › Game Mode).",
+    "mechanism": "Writes AutoGameModeEnabled=1 under HKCU\\Software\\Microsoft\\GameBar, the value behind the Settings toggle. When a game is detected Windows suppresses Windows Update driver installs and restart notifications and favours the game process over background work.",
+    "benefit": "Fewer interruptions and less background work while playing; can improve frame-time consistency on systems with heavy background load.",
+    "drawback": "Practically none on current Windows. Early Windows 10 builds (1703–1809) had stutter issues that have since been fixed.",
+    "recommendedFor": "All gaming PCs.",
+    "evidence": "Documented by Microsoft ('Use Game Mode while gaming on your Windows PC'). Average FPS gains are usually small; the main effect is fewer interruptions.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "FrameTime", "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "AutoGameModeEnabled", "kind": "DWord", "value": "1", "windowsDefault": "1" }
+    ]
+  },
+  {
+    "id": "gaming.backgroundrecording.disable",
+    "name": "Disable background recording (\"Record what happened\")",
+    "category": "Gaming",
+    "description": "Stops the Xbox Game Bar from continuously recording the last minutes of gameplay.",
+    "mechanism": "Writes HistoricalCaptureEnabled=0 (Settings › Gaming › Captures › Record what happened). When on, gameplay is continuously encoded with the GPU video encoder and buffered to disk.",
+    "benefit": "Removes continuous video encoding and disk writes during play. Typically a few percent FPS and lower frame-time variance, more on GPUs with limited encoder headroom.",
+    "drawback": "You can no longer save a clip of something that already happened. Manual recording (Win+Alt+R) still works.",
+    "recommendedFor": "Anyone who does not use instant replay from the Game Bar.",
+    "evidence": "Settings › Gaming › Captures. Windows 10's own Settings page labelled this option 'Record in the background while I'm playing a game (this may affect game performance)'. Measured impact depends on the GPU's encoder.",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "Fps", "FrameTime" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "HistoricalCaptureEnabled", "kind": "DWord", "value": "0", "windowsDefault": "0" }
+    ]
+  },
+  {
+    "id": "gaming.gamedvr.disable",
+    "name": "Disable Game Bar game capture (Game DVR)",
+    "category": "Gaming",
+    "description": "Turns off Xbox Game Bar game capture for this user.",
+    "mechanism": "Sets GameDVR_Enabled=0 (HKCU\\System\\GameConfigStore) and AppCaptureEnabled=0 (HKCU\\...\\GameDVR). With capture off, the capture pipeline is not initialised when a game starts.",
+    "benefit": "Removes capture hooks from games and prevents accidental recordings.",
+    "drawback": "Game Bar recording and screenshots (Win+Alt+R / Win+Alt+PrtScn) stop working. Other recorders (OBS, NVIDIA App, AMD Software) are unaffected.",
+    "recommendedFor": "Users who record with other software or not at all.",
+    "evidence": "These are the per-user values Windows writes when capture is disabled in Settings; widely documented. Performance gain is small when background recording is already off.",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "FrameTime" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "System\\GameConfigStore", "name": "GameDVR_Enabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "gaming.gamebar.controllerbutton.disable",
+    "name": "Don't open Game Bar with the controller's Xbox button",
+    "category": "Gaming",
+    "description": "Prevents the Xbox/Guide button on a controller from opening the Game Bar overlay.",
+    "mechanism": "Writes UseNexusForGameBarEnabled=0 under HKCU\\Software\\Microsoft\\GameBar (Settings › Gaming › Xbox Game Bar › 'Open Xbox Game Bar using this button on a controller').",
+    "benefit": "Avoids accidental overlay pop-ups that steal focus mid-game.",
+    "drawback": "The Game Bar must be opened with Win+G instead.",
+    "recommendedFor": "Controller players who don't use the Game Bar.",
+    "evidence": "Standard Settings toggle. No performance effect; convenience only.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "conditions": { "minBuild": 19041 },
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "UseNexusForGameBarEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "gaming.gamebar.startuptips.disable",
+    "name": "Hide Game Bar startup tips",
+    "category": "Gaming",
+    "description": "Stops the 'Press Win+G to open Game Bar' tip when games start.",
+    "mechanism": "Writes ShowStartupPanel=0 under HKCU\\Software\\Microsoft\\GameBar.",
+    "benefit": "Removes a notification that can appear over the game at launch.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone who finds the tip distracting.",
+    "evidence": "Value written by the Game Bar's own settings. Convenience only.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\GameBar", "name": "ShowStartupPanel", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "gaming.gamedvr.policy.disable",
+    "name": "Policy: disable Windows Game Recording and Broadcasting",
+    "category": "Gaming",
+    "description": "Applies the Group Policy that disables Game Bar recording and broadcasting for every user.",
+    "mechanism": "Sets AllowGameDVR=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR (Administrative Templates › Windows Components › Windows Game Recording and Broadcasting).",
+    "benefit": "Guarantees capture stays off for all accounts, even if a user re-enables it.",
+    "drawback": "Affects all users; Settings shows 'managed by your organization'. Game Bar recording cannot be used at all.",
+    "recommendedFor": "Shared or dedicated gaming PCs where recording is never wanted.",
+    "evidence": "Documented Group Policy (GameDVR.admx).",
+    "risk": "Medium",
+    "restart": "SignOut",
+    "impacts": [ "FrameTime" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\GameDVR", "name": "AllowGameDVR", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "gaming.windowed.optimizations",
+    "name": "Enable optimizations for windowed games",
+    "category": "Gaming",
+    "description": "Upgrades DirectX 10/11 games running windowed or borderless to the modern flip presentation model.",
+    "mechanism": "Adds SwapEffectUpgradeEnable=1 to DirectXUserGlobalSettings (Settings › Display › Graphics › Default graphics settings). DWM can then use independent flip for legacy 'blt' model games.",
+    "benefit": "Lower presentation latency in borderless/windowed games, and enables VRR and Auto HDR in windowed mode.",
+    "drawback": "Rare game compatibility issues; it can be disabled per game in Settings › Display › Graphics.",
+    "recommendedFor": "Players of DX10/11 games in borderless windowed mode.",
+    "evidence": "Microsoft DirectX Developer Blog, 'Windowed game optimizations' (2022). Takes effect when the game next starts.",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "Latency", "FrameTime" ],
+    "conditions": { "minBuild": 22621 },
+    "actions": [
+      { "$type": "registryToken", "hive": "HKCU", "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences", "name": "DirectXUserGlobalSettings", "token": "SwapEffectUpgradeEnable", "tokenValue": "1" }
+    ]
+  },
+  {
+    "id": "gaming.vrr.enable",
+    "name": "Enable Windows variable refresh rate for games",
+    "category": "Gaming",
+    "description": "Lets DirectX 11 games without native VRR support use G-SYNC/FreeSync/Adaptive-Sync.",
+    "mechanism": "Adds VRROptimizeEnable=1 to DirectXUserGlobalSettings (Settings › Display › Graphics › Variable refresh rate).",
+    "benefit": "Tear-free presentation without V-Sync's added latency in more games.",
+    "drawback": "Only works with a VRR-capable display, cable and driver; it does not replace enabling G-SYNC/FreeSync in the GPU control panel.",
+    "recommendedFor": "PCs with a VRR (G-SYNC / FreeSync / Adaptive-Sync) monitor.",
+    "evidence": "Microsoft documents the toggle ('Variable refresh rate' in Graphics settings, Windows 10 1903+). No effect when unsupported.",
+    "risk": "Low",
+    "restart": "AppRestart",
+    "impacts": [ "FrameTime", "Latency" ],
+    "conditions": { "minBuild": 18362 },
+    "tiers": [ "MidRange", "HighEnd" ],
+    "actions": [
+      { "$type": "registryToken", "hive": "HKCU", "path": "Software\\Microsoft\\DirectX\\UserGpuPreferences", "name": "DirectXUserGlobalSettings", "token": "VRROptimizeEnable", "tokenValue": "1" }
+    ]
+  }
+]

@@ -1,0 +1,52 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.ScannerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="System scan" Style="{StaticResource H2}" />
+                            <TextBlock Text="Reads CPU, GPU, memory, storage, firmware, displays, network, power, OS configuration, security features and gaming-relevant software. Read-only — no restore point is needed." Style="{StaticResource Body}" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Start scan" Command="{Binding ScanCommand}" Style="{StaticResource PrimaryButton}" VerticalAlignment="Top"
+                                IsEnabled="{Binding State.IsScanning, Converter={StaticResource InverseBool}}" />
+                    </Grid>
+                    <ProgressBar Value="{Binding State.ScanProgress, Mode=OneWay}" Maximum="100" Margin="0,16,0,6" />
+                    <TextBlock Text="{Binding Summary}" Style="{StaticResource Caption}" />
+                </StackPanel>
+            </Border>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Findings" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Findings}" ItemTemplate="{StaticResource BottleneckTemplate}" />
+                        <TextBlock Text="No findings yet — run a scan." Style="{StaticResource Caption}" Visibility="{Binding Findings.Count, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="Scan log" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Log}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Style="{StaticResource Mono}" Margin="0,2" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

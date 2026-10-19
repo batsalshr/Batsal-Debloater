@@ -1,0 +1,56 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.RamView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views"
+             xmlns:c="clr-namespace:UltimatePCOptimizerPro.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Memory configuration" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                        <TextBlock Text="UPGRADE / CONFIGURATION ADVICE" Style="{StaticResource H3}" Margin="0,12,0,6" />
+                        <ItemsControl ItemsSource="{Binding Recommendations}" ItemTemplate="{StaticResource BulletTemplate}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Memory pressure" Style="{StaticResource H2}" />
+                        <TextBlock Text="{Binding LiveText}" Style="{StaticResource Body}" />
+                        <c:SparklineChart Values="{Binding RamHistory}" Maximum="100" Height="80" Stroke="{StaticResource CyanBrush}" ShowGrid="True" Unit="%" Margin="0,10,0,0" />
+                        <ItemsControl ItemsSource="{Binding Guidance}" ItemTemplate="{StaticResource BulletTemplate}" Margin="0,12,0,0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Text="Memory-heavy processes (private memory)" Style="{StaticResource H2}" />
+                        <Button Content="Refresh" Command="{Binding RefreshProcessesCommand}" Style="{StaticResource SmallButton}" HorizontalAlignment="Right" VerticalAlignment="Top" />
+                    </Grid>
+                    <DataGrid ItemsSource="{Binding TopProcesses}" MaxHeight="420">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Process" Binding="{Binding Name}" Width="200" />
+                            <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="*" />
+                            <DataGridTextColumn Header="Private memory" Binding="{Binding PrivateBytes, Converter={StaticResource Bytes}}" Width="120" />
+                            <DataGridTextColumn Header="Working set" Binding="{Binding WorkingSetBytes, Converter={StaticResource Bytes}}" Width="120" />
+                            <DataGridTextColumn Header="CPU %" Binding="{Binding CpuPercent, StringFormat={}{0:0.0}}" Width="70" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Memory and background-activity tweaks" Style="{StaticResource H2}" />
+                    <v:TweakListView DataContext="{Binding Tweaks}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,351 @@
+[
+  {
+    "id": "privacy.advertisingid.disable",
+    "name": "Turn off the advertising ID",
+    "category": "Privacy",
+    "description": "Apps can no longer use your advertising ID for personalised ads.",
+    "mechanism": "Sets Enabled=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo (Settings › Privacy & security › General).",
+    "benefit": "Less cross-app ad tracking.",
+    "drawback": "Ads in apps become less personalised.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Settings privacy toggle.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", "name": "Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.tailored.disable",
+    "name": "Turn off tailored experiences",
+    "category": "Privacy",
+    "description": "Microsoft won't use your diagnostic data to personalise tips, ads and recommendations.",
+    "mechanism": "Sets TailoredExperiencesWithDiagnosticDataEnabled=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy.",
+    "benefit": "Fewer personalised tips and promotions.",
+    "drawback": "None for functionality.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Settings privacy toggle (Diagnostics & feedback).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", "name": "TailoredExperiencesWithDiagnosticDataEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.languagelist.optout",
+    "name": "Don't let websites access your language list",
+    "category": "Privacy",
+    "description": "Websites receive less information about your installed languages.",
+    "mechanism": "Sets HttpAcceptLanguageOptOut=1 under HKCU\\Control Panel\\International\\User Profile.",
+    "benefit": "Slightly reduces browser fingerprinting.",
+    "drawback": "Some sites may not pick your preferred language automatically.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Settings privacy toggle.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\International\\User Profile", "name": "HttpAcceptLanguageOptOut", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "privacy.feedback.never",
+    "name": "Feedback frequency: never ask",
+    "category": "Privacy",
+    "description": "Windows stops showing feedback request pop-ups.",
+    "mechanism": "Sets NumberOfSIUFInPeriod=0 under HKCU\\Software\\Microsoft\\Siuf\\Rules (Settings › Diagnostics & feedback › Feedback frequency).",
+    "benefit": "No feedback prompts appearing over games.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Settings value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Siuf\\Rules", "name": "NumberOfSIUFInPeriod", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.activityhistory.disable",
+    "name": "Policy: don't collect activity history",
+    "category": "Privacy",
+    "description": "Windows stops recording and uploading activity history.",
+    "mechanism": "Sets PublishUserActivities=0 and UploadUserActivities=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System.",
+    "benefit": "Less background logging and upload.",
+    "drawback": "Activity-based features (e.g. resuming activities on other devices) are unavailable.",
+    "recommendedFor": "Privacy-conscious users.",
+    "evidence": "Documented Group Policies (OS Policies).",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "PublishUserActivities", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\System", "name": "UploadUserActivities", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.telemetry.required",
+    "name": "Policy: send only required diagnostic data",
+    "category": "Privacy",
+    "description": "Limits Windows diagnostic data to the 'Required' level.",
+    "mechanism": "Sets AllowTelemetry=1 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection. On Home and Pro, 1 (Required) is the lowest supported level; 0 is only honoured on Enterprise/Education.",
+    "benefit": "Less optional diagnostic data collection and upload.",
+    "drawback": "The 'Optional diagnostic data' option becomes managed by policy; some Insider/feedback features require optional data.",
+    "recommendedFor": "Privacy-conscious users.",
+    "evidence": "Microsoft 'Configure Windows diagnostic data in your organization'. Required diagnostic data is still sent — this does not disable diagnostics.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "privacy.recall.disable",
+    "name": "Policy: turn off Recall snapshots",
+    "category": "Privacy",
+    "description": "Prevents Recall from saving screen snapshots (Copilot+ PCs).",
+    "mechanism": "Sets DisableAIDataAnalysis=1 under HKCU\\Software\\Policies\\Microsoft\\Windows\\WindowsAI ('Turn off saving snapshots for use with Recall').",
+    "benefit": "No periodic screen capture/analysis, saving CPU/NPU, disk space and protecting privacy.",
+    "drawback": "Recall cannot be used.",
+    "recommendedFor": "Copilot+ PCs where Recall is not wanted. Harmless elsewhere.",
+    "evidence": "Documented Windows AI policy (Windows 11 24H2).",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Privacy", "Responsiveness" ],
+    "conditions": { "minBuild": 26100 },
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "DisableAIDataAnalysis", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "cdm.silentapps.disable",
+    "name": "Stop automatic installation of suggested apps",
+    "category": "Privacy",
+    "description": "Windows stops silently downloading promoted apps and games.",
+    "mechanism": "Sets SilentInstalledAppsEnabled=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager.",
+    "benefit": "Prevents unexpected background downloads and new bloatware appearing in Start.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager value written by Windows for consumer experience suggestions.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Network", "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "cdm.startsuggestions.disable",
+    "name": "Don't show suggestions in Start",
+    "category": "Privacy",
+    "description": "Removes app suggestions/promotions in the Start menu.",
+    "mechanism": "Sets SystemPaneSuggestionsEnabled=0 and SubscribedContent-338388Enabled=0 under HKCU\\...\\ContentDeliveryManager.",
+    "benefit": "Fewer promotional tiles and ads.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager values for 'Show suggestions occasionally in Start'.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338388Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "cdm.tips.disable",
+    "name": "Don't show tips and suggestions while using Windows",
+    "category": "Privacy",
+    "description": "Stops 'Get tips and suggestions when using Windows' notifications.",
+    "mechanism": "Sets SubscribedContent-338389Enabled=0 under HKCU\\...\\ContentDeliveryManager.",
+    "benefit": "Fewer notifications that can pop up over full-screen games.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager value for the Notifications tips toggle.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338389Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "cdm.welcome.disable",
+    "name": "Don't show the Windows welcome experience after updates",
+    "category": "Privacy",
+    "description": "Stops the full-screen 'What's new' page after feature updates.",
+    "mechanism": "Sets SubscribedContent-310093Enabled=0 under HKCU\\...\\ContentDeliveryManager.",
+    "benefit": "No unexpected full-screen pages after updates.",
+    "drawback": "You won't see the feature tour.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager value for the Notifications welcome-experience toggle.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-310093Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "cdm.settings.suggestions",
+    "name": "Don't show suggested content in Settings",
+    "category": "Privacy",
+    "description": "Removes promotional suggestions inside the Settings app.",
+    "mechanism": "Sets SubscribedContent-338393Enabled, -353694Enabled and -353696Enabled to 0 under HKCU\\...\\ContentDeliveryManager.",
+    "benefit": "Cleaner Settings app without promotions.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager values for 'Show me suggested content in the Settings app'.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338393Enabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353694Enabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353696Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "cdm.lockscreen.tips",
+    "name": "Don't show fun facts and tips on the lock screen",
+    "category": "Privacy",
+    "description": "Removes promotional text and tips from the lock screen.",
+    "mechanism": "Sets RotatingLockScreenOverlayEnabled=0 and SubscribedContent-338387Enabled=0 under HKCU\\...\\ContentDeliveryManager.",
+    "benefit": "Cleaner lock screen without promotions.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Content Delivery Manager values for the lock-screen 'fun facts, tips, tricks' toggle.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "RotatingLockScreenOverlayEnabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338387Enabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.finishsetup.disable",
+    "name": "Don't suggest ways to finish setting up the device",
+    "category": "Privacy",
+    "description": "Stops the 'Let's finish setting up your device' full-screen nag.",
+    "mechanism": "Sets ScoobeSystemSettingEnabled=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement.",
+    "benefit": "No full-screen prompts promoting Microsoft services.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Notifications setting value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement", "name": "ScoobeSystemSettingEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "search.websuggestions.disable",
+    "name": "Policy: no web results in Windows Search",
+    "category": "Privacy",
+    "description": "Start/taskbar search returns local results only.",
+    "mechanism": "Sets the user policy DisableSearchBoxSuggestions=1 under HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer.",
+    "benefit": "Faster, local-only search with no Bing queries sent while typing.",
+    "drawback": "No web results in Start; recent search suggestions in Explorer's search box are also hidden.",
+    "recommendedFor": "Users who search only local apps and files.",
+    "evidence": "Documented Group Policy 'Turn off display of recent search entries in the File Explorer search box', which Windows Search also honours for web suggestions.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Privacy", "Responsiveness" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "DisableSearchBoxSuggestions", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "search.highlights.disable",
+    "name": "Turn off search highlights",
+    "category": "Privacy",
+    "description": "Removes daily illustrations/trending content from the search box and panel.",
+    "mechanism": "Sets IsDynamicSearchBoxEnabled=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings.",
+    "benefit": "Less network-loaded content in the taskbar.",
+    "drawback": "None.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Settings value (Search permissions › Show search highlights).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "search.cloud.disable",
+    "name": "Don't search cloud content (OneDrive/Outlook)",
+    "category": "Privacy",
+    "description": "Windows Search stops including Microsoft account and work/school cloud content.",
+    "mechanism": "Sets IsMSACloudSearchEnabled=0 and IsAADCloudSearchEnabled=0 under HKCU\\...\\SearchSettings.",
+    "benefit": "Faster local search; fewer cloud queries.",
+    "drawback": "OneDrive/Outlook/SharePoint content no longer appears in Windows Search.",
+    "recommendedFor": "Users who don't search cloud files from Start.",
+    "evidence": "Standard Settings values (Search permissions › Cloud content search).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsMSACloudSearchEnabled", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsAADCloudSearchEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "privacy.inking.disable",
+    "name": "Turn off inking & typing personalisation",
+    "category": "Privacy",
+    "description": "Windows stops building a personal dictionary from your typing and handwriting.",
+    "mechanism": "Sets RestrictImplicitInkCollection=1 and RestrictImplicitTextCollection=1 (HKCU\\Software\\Microsoft\\InputPersonalization) and HarvestContacts=0 (…\\TrainedDataStore).",
+    "benefit": "Less local data collection.",
+    "drawback": "Handwriting recognition and text suggestions are less personalised.",
+    "recommendedFor": "Privacy-conscious users.",
+    "evidence": "Values written by Settings › Privacy › Inking & typing personalization.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitInkCollection", "kind": "DWord", "value": "1" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization", "name": "RestrictImplicitTextCollection", "kind": "DWord", "value": "1" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\InputPersonalization\\TrainedDataStore", "name": "HarvestContacts", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "start.trackdocs.disable",
+    "name": "Start/Jump Lists: don't track recently opened files",
+    "category": "Privacy",
+    "description": "Stops showing recently opened items in Start, Jump Lists and Explorer.",
+    "mechanism": "Sets Start_TrackDocs=0 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Privacy on shared or streamed screens.",
+    "drawback": "Jump Lists no longer show recent files.",
+    "recommendedFor": "Streamers and privacy-conscious users.",
+    "evidence": "Standard Settings value (Start › Show recently opened items).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Start_TrackDocs", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "start.trackprogs.disable",
+    "name": "Start: don't track app launches",
+    "category": "Privacy",
+    "description": "Windows stops tracking which apps you launch to build 'Most used'.",
+    "mechanism": "Sets Start_TrackProgs=0 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Privacy.",
+    "drawback": "The 'Most used' list in Start disappears; search results are less personalised.",
+    "recommendedFor": "Privacy-conscious users.",
+    "evidence": "Standard Settings privacy value ('Let Windows improve Start and search results by tracking app launches').",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Start_TrackProgs", "kind": "DWord", "value": "0" }
+    ]
+  }
+]

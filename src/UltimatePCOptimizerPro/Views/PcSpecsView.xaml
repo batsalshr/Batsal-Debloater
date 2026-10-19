@@ -1,0 +1,43 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.PcSpecsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <DataTemplate x:Key="SectionTemplate">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="{Binding Icon}" Style="{StaticResource Icon}" Margin="0,0,10,0" />
+                        <TextBlock Text="{Binding Title}" Style="{StaticResource H2}" Margin="0" />
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,12,12">
+            <WrapPanel>
+                <Button Content="Copy PC specs" Command="{Binding CopyCommand}" />
+                <Button Content="Export specs to JSON" Command="{Binding ExportJsonCommand}" />
+                <Button Content="Export system report" Command="{Binding ExportReportCommand}" />
+                <Button Content="Refresh hardware scan" Command="{Binding RefreshCommand}" />
+                <Button Content="Analyze bottlenecks" Command="{Binding AnalyzeCommand}" />
+                <Button Content="Generate recommended tweaks" Command="{Binding RecommendCommand}" Style="{StaticResource PrimaryButton}" />
+            </WrapPanel>
+            <TextBlock Margin="0,8,0,0" Style="{StaticResource Caption}">
+                <Run Text="{Binding ScannedAt, Mode=OneWay}" /><Run Text="   " /><Run Text="{Binding StatusMessage, Mode=OneWay}" Foreground="{StaticResource CyanBrush}" />
+            </TextBlock>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ItemsControl ItemsSource="{Binding LeftSections}" ItemTemplate="{StaticResource SectionTemplate}" />
+                <ItemsControl Grid.Column="2" ItemsSource="{Binding RightSections}" ItemTemplate="{StaticResource SectionTemplate}" />
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

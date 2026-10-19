@@ -1,0 +1,302 @@
+[
+  {
+    "id": "ui.animations.minmax.disable",
+    "name": "Disable window minimise/maximise animations",
+    "category": "Explorer",
+    "description": "Windows snap open and closed instantly instead of animating.",
+    "mechanism": "Sets MinAnimate=\"0\" under HKCU\\Control Panel\\Desktop\\WindowMetrics ('Animate windows when minimizing and maximizing' in Performance Options).",
+    "benefit": "Desktop feels more immediate; slightly less compositor work on integrated GPUs.",
+    "drawback": "Less visual feedback when windows change state.",
+    "recommendedFor": "Low-end PCs and users who prefer instant UI.",
+    "evidence": "Documented Performance Options visual effect. Read at sign-in.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Desktop\\WindowMetrics", "name": "MinAnimate", "kind": "String", "value": "0" }
+    ]
+  },
+  {
+    "id": "ui.taskbar.animations.disable",
+    "name": "Disable taskbar animations",
+    "category": "Explorer",
+    "description": "Turns off 'Animations in the taskbar'.",
+    "mechanism": "Sets TaskbarAnimations=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced.",
+    "benefit": "Slightly less GPU/compositor work and a snappier taskbar on low-end hardware.",
+    "drawback": "Taskbar buttons no longer animate.",
+    "recommendedFor": "Low-end PCs.",
+    "evidence": "Performance Options visual effect. Takes effect after Explorer restarts.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAnimations", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "ui.transparency.disable",
+    "name": "Disable transparency effects",
+    "category": "Explorer",
+    "description": "Turns off acrylic/mica transparency in Start, taskbar and windows.",
+    "mechanism": "Sets EnableTransparency=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize (Settings › Personalization › Colors).",
+    "benefit": "Removes blur effects that cost GPU time, most noticeable on integrated graphics.",
+    "drawback": "Flatter, opaque appearance.",
+    "recommendedFor": "Integrated GPUs and low-end PCs.",
+    "evidence": "Standard Settings toggle; applies immediately.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "name": "EnableTransparency", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "ui.listviewshadow.disable",
+    "name": "Disable drop shadows for desktop icon labels",
+    "category": "Explorer",
+    "description": "Removes text shadows under desktop icon labels.",
+    "mechanism": "Sets ListviewShadow=0 under HKCU\\...\\Explorer\\Advanced ('Use drop shadows for icon labels on the desktop').",
+    "benefit": "Marginally less rendering work on very low-end systems.",
+    "drawback": "Icon labels can be harder to read on bright wallpapers.",
+    "recommendedFor": "Very low-end PCs.",
+    "evidence": "Performance Options visual effect. Small effect.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ListviewShadow", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "ui.dragfullwindows.disable",
+    "name": "Show only an outline while dragging windows",
+    "category": "Explorer",
+    "description": "Turns off 'Show window contents while dragging'.",
+    "mechanism": "Sets DragFullWindows=\"0\" under HKCU\\Control Panel\\Desktop.",
+    "benefit": "Avoids repainting window contents during drags on slow GPUs/CPUs.",
+    "drawback": "Only an outline is shown while moving or resizing windows.",
+    "recommendedFor": "Very low-end PCs.",
+    "evidence": "Performance Options visual effect. Read at sign-in.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Responsiveness" ],
+    "tiers": [ "LowEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Desktop", "name": "DragFullWindows", "kind": "String", "value": "0" }
+    ]
+  },
+  {
+    "id": "ui.menushowdelay",
+    "name": "Shorter menu show delay (200 ms)",
+    "category": "Explorer",
+    "description": "Cascading menus open after 200 ms instead of 400 ms.",
+    "mechanism": "Sets MenuShowDelay=\"200\" under HKCU\\Control Panel\\Desktop.",
+    "benefit": "Context and Start submenus feel more responsive.",
+    "drawback": "Submenus may open when the pointer only passes over them.",
+    "recommendedFor": "Users who prefer a snappier desktop.",
+    "evidence": "Documented SPI_SETMENUSHOWDELAY value. Perceived responsiveness only.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Responsiveness" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Desktop", "name": "MenuShowDelay", "kind": "String", "value": "200" }
+    ]
+  },
+  {
+    "id": "explorer.widgets.disable",
+    "name": "Disable Widgets (Windows 11)",
+    "category": "Explorer",
+    "description": "Removes the Widgets board and its background WebView processes.",
+    "mechanism": "Sets the policy AllowNewsAndInterests=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Dsh.",
+    "benefit": "Stops Widgets.exe/WebView2 processes (often 100–300 MB RAM) and their background network refreshes.",
+    "drawback": "Widgets board and taskbar weather button disappear for all users.",
+    "recommendedFor": "Low-end and mid-range Windows 11 PCs.",
+    "evidence": "Documented Group Policy 'Allow widgets'.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "minBuild": 22000 },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Dsh", "name": "AllowNewsAndInterests", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "explorer.newsinterests.win10.disable",
+    "name": "Disable News and Interests (Windows 10)",
+    "category": "Explorer",
+    "description": "Removes the taskbar news/weather feed on Windows 10.",
+    "mechanism": "Sets the policy EnableFeeds=0 under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Feeds.",
+    "benefit": "Stops the feed's background WebView process and network refreshes.",
+    "drawback": "Taskbar weather/news is removed for all users.",
+    "recommendedFor": "Windows 10 gaming PCs.",
+    "evidence": "Documented Group Policy 'Enable news and interests on the taskbar'.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "maxBuild": 19045 },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Feeds", "name": "EnableFeeds", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "explorer.fileext.show",
+    "name": "Show file name extensions",
+    "category": "Explorer",
+    "description": "Explorer shows extensions such as .exe and .pdf.",
+    "mechanism": "Sets HideFileExt=0 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Makes disguised files (e.g. 'photo.jpg.exe') obvious — a security improvement.",
+    "drawback": "Renaming files can accidentally change the extension.",
+    "recommendedFor": "Everyone.",
+    "evidence": "Standard Folder Options setting.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "explorer.hiddenfiles.show",
+    "name": "Show hidden files and folders",
+    "category": "Explorer",
+    "description": "Explorer shows items with the Hidden attribute (e.g. AppData).",
+    "mechanism": "Sets Hidden=1 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Easier access to game config folders in AppData.",
+    "drawback": "More clutter; easier to delete files that were hidden on purpose.",
+    "recommendedFor": "Users who edit game config files.",
+    "evidence": "Standard Folder Options setting. Protected operating system files remain hidden.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Hidden", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "explorer.launchto.thispc",
+    "name": "Open File Explorer to 'This PC'",
+    "category": "Explorer",
+    "description": "Explorer opens to drives instead of Home/Quick access.",
+    "mechanism": "Sets LaunchTo=1 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Faster access to drives; Explorer does not query recent/cloud files on open.",
+    "drawback": "Recent files are one click further away.",
+    "recommendedFor": "Personal preference.",
+    "evidence": "Standard Folder Options setting.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "LaunchTo", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "explorer.recent.hide",
+    "name": "Don't show recent and frequent items in Explorer",
+    "category": "Explorer",
+    "description": "Hides recently used files and frequent folders in Explorer Home/Quick access.",
+    "mechanism": "Sets ShowRecent=0 and ShowFrequent=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer.",
+    "benefit": "Privacy; Explorer Home loads faster without querying recent/cloud items.",
+    "drawback": "Recent files are no longer listed in Explorer.",
+    "recommendedFor": "Privacy-conscious users.",
+    "evidence": "Standard Folder Options privacy setting.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Privacy" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowRecent", "kind": "DWord", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer", "name": "ShowFrequent", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "explorer.classiccontextmenu",
+    "name": "Classic right-click menu (Windows 11)",
+    "category": "Explorer",
+    "description": "Shows the full Windows 10-style context menu without 'Show more options'.",
+    "mechanism": "Creates an empty (Default) value under HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32, which disables the new context menu handler for this user. Rollback deletes the created keys.",
+    "benefit": "All shell extensions in one menu; fewer clicks.",
+    "drawback": "Loses the modern menu's styling. Microsoft may change this behaviour in future builds.",
+    "recommendedFor": "Power users.",
+    "evidence": "Widely documented per-user COM override; no system files are modified.",
+    "risk": "Low",
+    "restart": "ExplorerRestart",
+    "impacts": [ "Convenience" ],
+    "conditions": { "minBuild": 22000 },
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32", "name": "", "kind": "String", "value": "" }
+    ]
+  },
+  {
+    "id": "taskbar.alignleft",
+    "name": "Align taskbar icons to the left (Windows 11)",
+    "category": "Explorer",
+    "description": "Moves Start and taskbar icons to the left edge.",
+    "mechanism": "Sets TaskbarAl=0 under HKCU\\...\\Explorer\\Advanced (Settings › Personalization › Taskbar › Taskbar behaviours).",
+    "benefit": "Familiar layout; Start is always at the same position.",
+    "drawback": "Personal preference only.",
+    "recommendedFor": "Personal preference.",
+    "evidence": "Standard Settings value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "conditions": { "minBuild": 22000 },
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "TaskbarAl", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "taskbar.taskview.hide",
+    "name": "Hide the Task View button",
+    "category": "Explorer",
+    "description": "Removes the Task View button from the taskbar (Win+Tab still works).",
+    "mechanism": "Sets ShowTaskViewButton=0 under HKCU\\...\\Explorer\\Advanced.",
+    "benefit": "Cleaner taskbar.",
+    "drawback": "Task View is only reachable by Win+Tab.",
+    "recommendedFor": "Personal preference.",
+    "evidence": "Standard Settings value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "ShowTaskViewButton", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "taskbar.search.icononly",
+    "name": "Taskbar search: icon only",
+    "category": "Explorer",
+    "description": "Replaces the taskbar search box with a search icon.",
+    "mechanism": "Sets SearchboxTaskbarMode=1 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search (0 hidden, 1 icon, 2 box).",
+    "benefit": "Frees taskbar space; the search box no longer renders highlights.",
+    "drawback": "Personal preference only.",
+    "recommendedFor": "Personal preference.",
+    "evidence": "Standard Settings value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "SearchboxTaskbarMode", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "start.recommendations.hide",
+    "name": "Start: hide recommendations for tips and new apps (Windows 11)",
+    "category": "Explorer",
+    "description": "Stops Start from recommending tips, shortcuts and new apps.",
+    "mechanism": "Sets Start_IrisRecommendations=0 under HKCU\\...\\Explorer\\Advanced (Settings › Personalization › Start).",
+    "benefit": "Less promotional content in Start.",
+    "drawback": "None for most users.",
+    "recommendedFor": "Everyone who dislikes suggestions.",
+    "evidence": "Standard Settings value (Windows 11 22H2+).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Privacy", "Convenience" ],
+    "conditions": { "minBuild": 22621 },
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "Start_IrisRecommendations", "kind": "DWord", "value": "0" }
+    ]
+  }
+]

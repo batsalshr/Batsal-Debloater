@@ -1,0 +1,89 @@
+[
+  {
+    "id": "startup.delay.remove",
+    "name": "Remove the startup-app launch delay (SSD systems)",
+    "category": "Startup",
+    "description": "Startup apps launch immediately after sign-in instead of after Explorer's built-in delay.",
+    "mechanism": "Sets StartupDelayInMSec=0 under HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize.",
+    "benefit": "The desktop is fully ready sooner after sign-in on fast storage.",
+    "drawback": "All startup apps start at once; on HDDs or weak CPUs this makes the first minute after sign-in slower, which is why it is limited to SSD systems.",
+    "recommendedFor": "Mid-range and high-end PCs with Windows on an SSD.",
+    "evidence": "Explorer reads this value at sign-in; effect is limited to the first seconds after logon.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Responsiveness" ],
+    "conditions": { "requiresSsdSystemDrive": true },
+    "tiers": [ "MidRange", "HighEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize", "name": "StartupDelayInMSec", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "system.faststartup.disable",
+    "name": "Disable Fast Startup",
+    "category": "Startup",
+    "description": "Shut down performs a full shutdown instead of hibernating the kernel session.",
+    "mechanism": "Sets HiberbootEnabled=0 under HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power (Control Panel › Power Options › 'Turn on fast startup').",
+    "benefit": "Drivers and the kernel fully reinitialise on every boot, which avoids long-uptime driver issues, applies driver/firmware updates reliably and helps dual-boot setups.",
+    "drawback": "Cold boots take a few seconds longer.",
+    "recommendedFor": "Gaming PCs that are shut down daily, dual-boot systems, troubleshooting.",
+    "evidence": "Documented Fast Startup behaviour. Restart already performs a full boot regardless of this setting.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Responsiveness" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power", "name": "HiberbootEnabled", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "system.restartapps.disable",
+    "name": "Don't reopen apps automatically after sign-in",
+    "category": "Startup",
+    "description": "Turns off 'Automatically save my restartable apps and restart them when I sign back in'.",
+    "mechanism": "Sets RestartApps=0 under HKCU\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon (Settings › Accounts › Sign-in options).",
+    "benefit": "Fewer apps competing for resources right after sign-in.",
+    "drawback": "Previously open apps are not restored after a restart.",
+    "recommendedFor": "Users who prefer a clean desktop after reboot.",
+    "evidence": "Standard Settings value (Windows 10 1709+).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Responsiveness" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon", "name": "RestartApps", "kind": "DWord", "value": "0", "windowsDefault": "0" }
+    ]
+  },
+  {
+    "id": "system.verbosestatus",
+    "name": "Show detailed status messages during startup/shutdown",
+    "category": "Startup",
+    "description": "Windows shows what it is doing (e.g. 'Stopping services') instead of 'Please wait'.",
+    "mechanism": "Sets VerboseStatus=1 under HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System ('Display highly detailed status messages').",
+    "benefit": "Helps diagnose slow boots or shutdowns.",
+    "drawback": "None (diagnostic only).",
+    "recommendedFor": "Troubleshooting slow startup/shutdown.",
+    "evidence": "Documented Group Policy.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", "name": "VerboseStatus", "kind": "DWord", "value": "1" }
+    ]
+  },
+  {
+    "id": "system.autoendtasks",
+    "name": "Close hung apps automatically at shutdown",
+    "category": "Startup",
+    "description": "Windows ends unresponsive apps at shutdown/sign-out without asking.",
+    "mechanism": "Sets AutoEndTasks=\"1\" under HKCU\\Control Panel\\Desktop.",
+    "benefit": "Shutdown and restart are not blocked by 'This app is preventing shutdown'.",
+    "drawback": "Unsaved work in apps that don't respond is lost without a prompt.",
+    "recommendedFor": "Users who always save before shutting down.",
+    "evidence": "Documented user setting.",
+    "risk": "Medium",
+    "restart": "SignOut",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Desktop", "name": "AutoEndTasks", "kind": "String", "value": "1" }
+    ]
+  }
+]

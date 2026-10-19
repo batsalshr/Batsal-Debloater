@@ -1,0 +1,28 @@
+﻿{
+    "id":  "safe",
+    "name":  "Safe Optimization",
+    "description":  "Low-risk changes with no loss of important features: Game Mode, background recording off, accessibility hotkey pop-ups off, promotional content and suggestions off, and the refresh-rate fix. Recommended for everyone.",
+    "maxRisk":  "Low",
+    "requiresExplicitOptIn":  false,
+    "includeRefreshRateFix":  true,
+    "tweaks":  [
+                   "gaming.gamemode.enable",
+                   "gaming.backgroundrecording.disable",
+                   "gaming.gamebar.startuptips.disable",
+                   "input.stickykeys.hotkey.disable",
+                   "input.togglekeys.hotkey.disable",
+                   "input.filterkeys.hotkey.disable",
+                   "privacy.advertisingid.disable",
+                   "privacy.tailored.disable",
+                   "privacy.languagelist.optout",
+                   "privacy.feedback.never",
+                   "cdm.silentapps.disable",
+                   "cdm.startsuggestions.disable",
+                   "cdm.tips.disable",
+                   "cdm.welcome.disable",
+                   "cdm.settings.suggestions",
+                   "cdm.lockscreen.tips",
+                   "privacy.finishsetup.disable",
+                   "search.highlights.disable"
+               ]
+}

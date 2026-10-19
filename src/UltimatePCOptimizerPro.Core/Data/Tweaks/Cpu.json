@@ -1,0 +1,76 @@
+[
+  {
+    "id": "cpu.mmcss.systemresponsiveness",
+    "name": "MMCSS: reserve less CPU for low-priority work",
+    "category": "Cpu",
+    "description": "Lowers the share of CPU time the Multimedia Class Scheduler Service reserves for background tasks from 20% to 10%.",
+    "mechanism": "Sets SystemResponsiveness=10 under HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile. MMCSS boosts threads registered for multimedia tasks and reserves this percentage for lower-priority work. Microsoft documents that values are rounded up to a multiple of 10 and 0 is treated as 10.",
+    "benefit": "Threads registered with MMCSS (mainly audio, and engines that register 'Games' or 'Pro Audio') get slightly more uninterrupted CPU time.",
+    "drawback": "No effect on games that don't use MMCSS. Background work gets less guaranteed time under full load.",
+    "recommendedFor": "Expert users on high-end systems; low-latency audio work.",
+    "evidence": "Documented in Win32 'Multimedia Class Scheduler Service'. Independent testing has not shown consistent FPS gains — treat as experimental.",
+    "risk": "Medium",
+    "restart": "Restart",
+    "impacts": [ "Latency" ],
+    "tiers": [ "HighEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile", "name": "SystemResponsiveness", "kind": "DWord", "value": "10" }
+    ]
+  },
+  {
+    "id": "cpu.mmcss.gamestask",
+    "name": "MMCSS 'Games' task: high scheduling category",
+    "category": "Cpu",
+    "description": "Raises the MMCSS priority profile used by games that register with the 'Games' task.",
+    "mechanism": "Under ...\\Multimedia\\SystemProfile\\Tasks\\Games sets Priority=6, 'Scheduling Category'=High and 'SFIO Priority'=High (defaults 2 / Medium / Normal).",
+    "benefit": "Only threads that call AvSetMmThreadCharacteristics(\"Games\") are affected; for those, scheduling and I/O priority increase.",
+    "drawback": "Most games never register with MMCSS, so typically no effect. Can starve other work if a registered thread misbehaves.",
+    "recommendedFor": "Experimentation only, measured with the Benchmark Center before and after.",
+    "evidence": "Values are documented in the MMCSS task registry schema. Benefit is unproven — commonly repeated online without measurements.",
+    "risk": "Expert",
+    "restart": "Restart",
+    "impacts": [ "Latency" ],
+    "tiers": [ "HighEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games", "name": "Priority", "kind": "DWord", "value": "6" },
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games", "name": "Scheduling Category", "kind": "String", "value": "High" },
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games", "name": "SFIO Priority", "kind": "String", "value": "High" }
+    ]
+  },
+  {
+    "id": "cpu.prioritysep.programs",
+    "name": "Processor scheduling: favour programs (explicit 0x26)",
+    "category": "Cpu",
+    "description": "Explicitly sets 'Adjust for best performance of: Programs' with short, variable quanta and maximum foreground boost.",
+    "mechanism": "Sets Win32PrioritySeparation=0x26 (38) under HKLM\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl, as configured in System Properties › Advanced › Performance › Advanced.",
+    "benefit": "Restores foreground priority if the PC was set to 'Background services'. On a default client install (value 2) behaviour is already equivalent — expect no change.",
+    "drawback": "None on client Windows; on servers it reduces background service throughput.",
+    "recommendedFor": "PCs previously switched to 'Background services'.",
+    "evidence": "Documented bit-field (quantum length, variability, foreground boost). Takes effect immediately.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Responsiveness" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\PriorityControl", "name": "Win32PrioritySeparation", "kind": "DWord", "value": "38" }
+    ]
+  },
+  {
+    "id": "cpu.powerthrottling.disable",
+    "name": "Disable Power Throttling (desktops)",
+    "category": "Cpu",
+    "description": "Stops Windows from running background processes in power-efficient (EcoQoS) mode.",
+    "mechanism": "Sets PowerThrottlingOff=1 under HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling. Normally Windows lowers clocks or uses efficient cores for processes it considers background.",
+    "benefit": "Helper processes of games, launchers and streaming tools are not throttled when the game loses focus (alt-tab, second monitor, streaming).",
+    "drawback": "Higher power use and heat; background tasks may occupy performance cores more often on hybrid CPUs.",
+    "recommendedFor": "Desktop gaming/streaming PCs. Not for laptops.",
+    "evidence": "Microsoft 'Introducing EcoQoS' and Windows power management documentation. Impact is workload dependent.",
+    "risk": "Medium",
+    "restart": "Restart",
+    "impacts": [ "FrameTime" ],
+    "conditions": { "desktopOnly": true },
+    "tiers": [ "HighEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\Power\\PowerThrottling", "name": "PowerThrottlingOff", "kind": "DWord", "value": "1" }
+    ]
+  }
+]

@@ -1,0 +1,55 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.GpuView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views"
+             xmlns:c="clr-namespace:UltimatePCOptimizerPro.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ItemsControl ItemsSource="{Binding Gpus}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource H2}" />
+                                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Live GPU telemetry" Style="{StaticResource H2}" />
+                        <TextBlock Text="{Binding LiveText}" Style="{StaticResource Body}" />
+                        <TextBlock Text="UTILISATION %" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <c:SparklineChart Values="{Binding UtilHistory}" Maximum="100" Height="60" Stroke="{StaticResource PurpleBrush}" ShowGrid="True" Unit="%" />
+                        <TextBlock Text="VRAM IN USE (GB)" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <c:SparklineChart Values="{Binding VramHistory}" Height="60" Stroke="{StaticResource CyanBrush}" ShowGrid="True" Unit=" GB" />
+                        <TextBlock Text="TEMPERATURE (°C)" Style="{StaticResource H3}" Margin="0,10,0,4" />
+                        <c:SparklineChart Values="{Binding TempHistory}" Height="60" Stroke="{StaticResource WarningBrush}" ShowGrid="True" Unit=" °C" />
+                        <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRowTemplate}" Margin="0,12,0,0" />
+                        <Button Content="Windows Graphics settings (per-app GPU, HAGS)" Command="{Binding OpenGraphicsSettingsCommand}" Style="{StaticResource SmallButton}" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="GPU-bound vs CPU-bound guidance" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding Guidance}" ItemTemplate="{StaticResource BulletTemplate}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Supported graphics settings" Style="{StaticResource H2}" />
+                    <v:TweakListView DataContext="{Binding Tweaks}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

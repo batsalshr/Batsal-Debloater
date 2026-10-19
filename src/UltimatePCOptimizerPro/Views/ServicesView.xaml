@@ -1,0 +1,89 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.ServicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="0,0,12,12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="14" />
+            <ColumnDefinition Width="2*" MinWidth="360" />
+        </Grid.ColumnDefinitions>
+        <DockPanel>
+            <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid>
+                    <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                    <TextBlock Text="Search services…" Style="{StaticResource Caption}" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                               Visibility="{Binding Search, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                </Grid>
+                <ComboBox Grid.Column="1" ItemsSource="{Binding CategoryFilters}" SelectedItem="{Binding CategoryFilter}" Margin="8,0,0,0" MinWidth="180" />
+                <Button Grid.Column="2" Content="&#xE72C;" FontFamily="{StaticResource IconFont}" Command="{Binding ReloadCommand}" Margin="8,0,0,0" />
+            </Grid>
+            <TextBlock DockPanel.Dock="Top" Text="{Binding Summary}" Style="{StaticResource Caption}" Margin="0,0,0,8" />
+            <DataGrid ItemsSource="{Binding View}" SelectedItem="{Binding Selected}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Service" Binding="{Binding DisplayName}" Width="*" />
+                    <DataGridTemplateColumn Header="Category" Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Badge}" Background="{Binding Category, Converter={StaticResource StatusBrush}, ConverterParameter=soft}">
+                                    <TextBlock Text="{Binding Category, Converter={StaticResource EnumDisplay}}" Style="{StaticResource BadgeText}" Foreground="{Binding Category, Converter={StaticResource StatusBrush}}" />
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="State" Binding="{Binding State}" Width="80" />
+                    <DataGridTextColumn Header="Startup" Binding="{Binding StartModeDisplay}" Width="130" />
+                    <DataGridTextColumn Header="Memory" Binding="{Binding WorkingSetBytes, Converter={StaticResource Bytes}}" Width="80" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Select a service to see details." Style="{StaticResource Caption}" Visibility="{Binding Selected, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                    <StackPanel Visibility="{Binding Selected, Converter={StaticResource NullToVis}}">
+                        <TextBlock Text="{Binding Selected.DisplayName}" Style="{StaticResource H2}" Margin="0,0,0,2" />
+                        <TextBlock Text="{Binding Selected.Name}" Style="{StaticResource Mono}" Margin="0,0,0,10" />
+                        <TextBlock Text="PURPOSE" Style="{StaticResource H3}" />
+                        <TextBlock Text="{Binding Selected.Catalog.Purpose}" Style="{StaticResource Body}" Margin="0,4,0,0" Visibility="{Binding Selected.Catalog, Converter={StaticResource NullToVis}}" />
+                        <TextBlock Text="{Binding Selected.Description}" Style="{StaticResource Body}" Margin="0,4,0,10" />
+                        <TextBlock Text="RECOMMENDED ACTION" Style="{StaticResource H3}" />
+                        <TextBlock Text="{Binding Selected.RecommendedAction}" Style="{StaticResource Body}" Foreground="{StaticResource CyanBrush}" Margin="0,4,0,10" />
+                        <TextBlock Text="POTENTIAL SIDE EFFECTS" Style="{StaticResource H3}" Visibility="{Binding Selected.Catalog, Converter={StaticResource NullToVis}}" />
+                        <TextBlock Text="{Binding Selected.Catalog.SideEffects}" Style="{StaticResource Body}" Foreground="{StaticResource WarningBrush}" Margin="0,4,0,10" Visibility="{Binding Selected.Catalog, Converter={StaticResource NullToVis}}" />
+                        <TextBlock Text="CURRENT" Style="{StaticResource H3}" />
+                        <TextBlock Style="{StaticResource Body}" Margin="0,4,0,0"><Run Text="{Binding Selected.State, Mode=OneWay}" /><Run Text=" · startup " /><Run Text="{Binding Selected.StartModeDisplay, Mode=OneWay}" /><Run Text=" · PID " /><Run Text="{Binding Selected.ProcessId, Mode=OneWay}" /></TextBlock>
+                        <TextBlock Text="Runs in a shared svchost process; memory shown is the whole host's." Style="{StaticResource Caption}" Visibility="{Binding Selected.IsSharedHost, Converter={StaticResource BoolToVis}}" />
+                        <TextBlock Text="{Binding Selected.PathName}" Style="{StaticResource Mono}" FontSize="11" Margin="0,4,0,10" />
+                        <TextBlock Text="DEPENDS ON" Style="{StaticResource H3}" />
+                        <ItemsControl ItemsSource="{Binding DependsOn}" ItemTemplate="{StaticResource BulletTemplate}" Margin="0,4,0,8" />
+                        <TextBlock Text="SERVICES THAT DEPEND ON IT" Style="{StaticResource H3}" />
+                        <ItemsControl ItemsSource="{Binding Dependents}" ItemTemplate="{StaticResource BulletTemplate}" Margin="0,4,0,12" />
+
+                        <Border Style="{StaticResource InnerCard}" Visibility="{Binding Selected.CanModify, Converter={StaticResource BoolToVis}}">
+                            <StackPanel>
+                                <TextBlock Text="CHANGE STARTUP TYPE" Style="{StaticResource H3}" Margin="0,0,0,8" />
+                                <StackPanel Orientation="Horizontal">
+                                    <ComboBox ItemsSource="{Binding StartModes}" SelectedItem="{Binding NewMode}" MinWidth="170" Margin="0,0,8,0" />
+                                    <Button Content="Apply" Command="{Binding ApplyModeCommand}" Style="{StaticResource PrimaryButton}" />
+                                </StackPanel>
+                                <Button Content="Restore original startup type" Command="{Binding RestoreOriginalCommand}" Margin="0,8,0,0" HorizontalAlignment="Left"
+                                        Visibility="{Binding HasBackup, Converter={StaticResource BoolToVis}}" />
+                                <TextBlock Text="A verified restore point and a backup of the original startup type are created first. Changes apply after restart." Style="{StaticResource Caption}" Margin="0,8,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource InnerCard}" Visibility="{Binding Selected.CanModify, Converter={StaticResource BoolToVis}, ConverterParameter=invert}">
+                            <TextBlock Text="This service is locked: essential, protected, per-user, or unknown. Unknown is never treated as safe to disable." Style="{StaticResource Body}" />
+                        </Border>
+                        <Button Content="Open Windows Services console" Command="{Binding OpenServicesConsoleCommand}" Style="{StaticResource GhostButton}" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,73 @@
+[
+  {
+    "id": "cpu.powerplan.highperformance",
+    "name": "Use the High performance power plan",
+    "category": "Power",
+    "description": "Activates the built-in High performance plan (created from the Windows template if hidden).",
+    "mechanism": "Calls PowerSetActiveScheme with 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c. The plan keeps the minimum processor state at 100% on AC and disables several idle power-saving features.",
+    "benefit": "Faster clock ramp-up and fewer latency spikes from deep idle states; most noticeable on older CPUs or OEM-modified Balanced plans.",
+    "drawback": "Higher idle power, heat and fan noise. On modern CPUs Balanced often reaches the same peak clocks. Some Modern Standby laptops do not allow this plan.",
+    "recommendedFor": "Desktops, and laptops while plugged in.",
+    "evidence": "Built-in Windows power plan; behaviour documented in Windows power policy documentation.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "FrameTime", "Latency", "Power" ],
+    "actions": [
+      { "$type": "powerScheme", "scheme": "HighPerformance" }
+    ]
+  },
+  {
+    "id": "cpu.powerplan.ultimate",
+    "name": "Use the Ultimate Performance power plan (desktops)",
+    "category": "Power",
+    "description": "Adds and activates the hidden Ultimate Performance plan.",
+    "mechanism": "Duplicates the Ultimate Performance template (e9a42b02-d5df-448d-aa00-03f14749eb61) with powercfg and activates it. It removes most micro power-management latency.",
+    "benefit": "Lowest possible power-management latency for workloads with frequent idle/busy transitions.",
+    "drawback": "Noticeably higher idle power and heat; gaming gains over High performance are usually within noise. The created plan is deleted again on rollback.",
+    "recommendedFor": "High-end desktops only.",
+    "evidence": "Microsoft introduced the plan for workstations (Windows 10 1803). Benchmark before/after to confirm any benefit.",
+    "risk": "Medium",
+    "restart": "None",
+    "impacts": [ "Latency", "Power" ],
+    "conditions": { "desktopOnly": true },
+    "actions": [
+      { "$type": "powerScheme", "scheme": "UltimatePerformance" }
+    ]
+  },
+  {
+    "id": "power.usb.selectivesuspend.disable",
+    "name": "Disable USB selective suspend (plugged in)",
+    "category": "Power",
+    "description": "Stops Windows from suspending idle USB devices while on AC power.",
+    "mechanism": "Sets the active plan's 'USB settings › USB selective suspend setting' (2a737441-…/48e6b7a6-…) to 0 (Disabled) for AC. Battery behaviour is unchanged.",
+    "benefit": "Prevents wake-up delays or dropouts of USB mice, keyboards, headsets and controllers after idle periods.",
+    "drawback": "Slightly higher idle power when plugged in.",
+    "recommendedFor": "PCs with USB input or audio devices that disconnect or lag after being idle.",
+    "evidence": "Documented power setting (powercfg /q). Applies to the currently active plan only.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Latency" ],
+    "tiers": [ "MidRange", "HighEnd" ],
+    "actions": [
+      { "$type": "powerSetting", "displayName": "USB selective suspend", "subgroup": "2a737441-1930-4402-8d77-b2bebba308a3", "setting": "48e6b7a6-50f5-4782-a5d4-53bb8f07e226", "acValue": 0 }
+    ]
+  },
+  {
+    "id": "power.pcie.aspm.off",
+    "name": "PCI Express Link State Power Management: Off (plugged in)",
+    "category": "Power",
+    "description": "Keeps PCIe links (GPU, NVMe, network) out of low-power states on AC power.",
+    "mechanism": "Sets the active plan's 'PCI Express › Link State Power Management' (501a4d13-…/ee12f906-…) to 0 (Off) for AC.",
+    "benefit": "Avoids link wake-up latency; can fix micro-stutter with some NVMe drives and Wi-Fi adapters.",
+    "drawback": "Higher idle power when plugged in. Battery behaviour is unchanged.",
+    "recommendedFor": "High-end desktops and plugged-in gaming laptops.",
+    "evidence": "Documented power setting. Firmware may override ASPM regardless of this value.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Latency", "FrameTime" ],
+    "tiers": [ "HighEnd" ],
+    "actions": [
+      { "$type": "powerSetting", "displayName": "PCIe Link State Power Management", "subgroup": "501a4d13-42af-4429-9fd1-a8218c268e20", "setting": "ee12f906-d277-404b-b6da-e5fa1a576df5", "acValue": 0 }
+    ]
+  }
+]

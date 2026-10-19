@@ -1,0 +1,135 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.SmartOptimizeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Border Style="{StaticResource Card}" Background="{StaticResource HeroGradientBrush}">
+                <StackPanel>
+                    <TextBlock Text="1 · Choose an optimization profile" Style="{StaticResource H2}" />
+                    <TextBlock Text="{Binding TierSummary}" Style="{StaticResource Body}" Margin="0,0,0,12" />
+                    <ItemsControl ItemsSource="{Binding Profiles}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"
+                                        Margin="0,0,10,0" Padding="14" HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource ButtonBase}">
+                                            <Setter Property="FontWeight" Value="Normal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{StaticResource CyanBrush}" />
+                                                    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <StackPanel HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13.5" Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" />
+                                        <Border Style="{StaticResource Badge}" Background="{StaticResource PurpleSoftBrush}" Margin="0,6,0,0" Visibility="{Binding IsSuggested, Converter={StaticResource BoolToVis}}">
+                                            <TextBlock Text="Suggested for this PC" Style="{StaticResource BadgeText}" Foreground="{StaticResource PurpleBrush}" />
+                                        </Border>
+                                        <TextBlock Text="{Binding RiskText}" Style="{StaticResource Caption}" Margin="0,6,0,0" />
+                                        <TextBlock Text="{Binding Description}" Style="{StaticResource Caption}" Margin="0,6,0,0" TextAlignment="Left" />
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <CheckBox Margin="0,14,0,0" IsChecked="{Binding ExtremeAcknowledged}" Visibility="{Binding RequiresAck, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="I understand Extreme Advanced includes experimental settings with limited evidence, and I will benchmark before and after." Foreground="{StaticResource WarningBrush}" TextWrapping="Wrap" />
+                    </CheckBox>
+                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                        <Button Content="2 · Scan &amp; generate plan" Command="{Binding GenerateCommand}" Style="{StaticResource PrimaryButton}" />
+                        <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Caption}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Visibility="{Binding HasPlan, Converter={StaticResource BoolToVis}}">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="3 · Review the hardware-specific plan" Style="{StaticResource H2}" />
+                            <TextBlock Text="{Binding PlanSummary}" Style="{StaticResource Body}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                            <Button Content="Select all" Command="{Binding SelectAllCommand}" Style="{StaticResource SmallButton}" />
+                            <Button Content="Select none" Command="{Binding SelectNoneCommand}" Style="{StaticResource SmallButton}" />
+                        </StackPanel>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding Notes}" ItemTemplate="{StaticResource BulletTemplate}" Margin="0,10,0,0" />
+                    <ItemsControl ItemsSource="{Binding Plan}" Margin="0,12,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource InnerCard}" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox IsChecked="{Binding Selected}" VerticalAlignment="Top" Margin="0,2,12,0" />
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Title}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Reason}" Style="{StaticResource Body}" FontSize="12.5" Margin="0,3,0,0" />
+                                            <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0">
+                                                <Run Text="Benefit: " Foreground="{StaticResource SuccessBrush}" /><Run Text="{Binding Benefit, Mode=OneWay}" />
+                                            </TextBlock>
+                                            <TextBlock Style="{StaticResource Caption}" Margin="0,2,0,0">
+                                                <Run Text="Tradeoff: " Foreground="{StaticResource WarningBrush}" /><Run Text="{Binding Drawback, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Margin="12,0,0,0">
+                                            <Border Style="{StaticResource Badge}" HorizontalAlignment="Right" Background="{Binding Risk, Converter={StaticResource StatusBrush}, ConverterParameter=soft}">
+                                                <TextBlock Text="{Binding Risk}" Style="{StaticResource BadgeText}" Foreground="{Binding Risk, Converter={StaticResource StatusBrush}}" />
+                                            </Border>
+                                            <TextBlock Text="{Binding Category}" Style="{StaticResource Caption}" HorizontalAlignment="Right" Margin="0,4,0,0" />
+                                            <TextBlock Text="{Binding RestartText}" Style="{StaticResource Caption}" HorizontalAlignment="Right" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="4 · Create restore point &amp; apply selected" Command="{Binding ApplyCommand}" Style="{StaticResource HeroButton}" FontSize="14" Padding="20,10" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding ResultSummary}" Style="{StaticResource Body}" Foreground="{StaticResource CyanBrush}" Margin="0,12,0,0"
+                               Visibility="{Binding ResultSummary, Converter={StaticResource NullToVis}}" />
+                    <Button Content="Run a post-optimization benchmark" Command="{Binding OpenBenchmarkCommand}" HorizontalAlignment="Left" Margin="0,10,0,0"
+                            Visibility="{Binding ShowBenchmarkOffer, Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Visibility="{Binding Excluded.Count, Converter={StaticResource NullToVis}}">
+                <StackPanel>
+                    <TextBlock Text="Not included in this plan (and why)" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding Excluded}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="360" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource Value}" FontSize="12.5" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Reason}" Style="{StaticResource Caption}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

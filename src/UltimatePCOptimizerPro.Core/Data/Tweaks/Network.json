@@ -1,0 +1,72 @@
+[
+  {
+    "id": "net.deliveryoptimization.nopeer",
+    "name": "Delivery Optimization: no peer-to-peer uploads",
+    "category": "Network",
+    "description": "Downloads Windows and Store updates only from Microsoft, without serving them to other PCs.",
+    "mechanism": "Sets the policy DODownloadMode=0 ('HTTP only, no peering') under HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization. Applied by the Delivery Optimization service to new download jobs.",
+    "benefit": "No background upload traffic competing with games — relevant on slow upload links or routers prone to bufferbloat.",
+    "drawback": "Households with several PCs lose LAN sharing of updates. Updates continue to download and install normally.",
+    "recommendedFor": "Gaming PCs on connections with limited upload bandwidth.",
+    "evidence": "Microsoft Delivery Optimization reference (DownloadMode values).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Network" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode", "kind": "DWord", "value": "0" }
+    ]
+  },
+  {
+    "id": "net.adapter.powersaving.disable",
+    "name": "Network adapter: don't allow Windows to turn it off",
+    "category": "Network",
+    "description": "Clears 'Allow the computer to turn off this device to save power' on the active network adapter.",
+    "mechanism": "Sets Enable=false on the adapter's root\\wmi:MSPower_DeviceEnable instance — the same setting as Device Manager › adapter › Power Management.",
+    "benefit": "Prevents the adapter from being powered down when idle, which can cause brief disconnects or latency spikes on wake.",
+    "drawback": "Slightly higher idle power. Takes effect for future idle periods; on some drivers after reconnecting.",
+    "recommendedFor": "PCs with connection drops after idle or on Wi-Fi.",
+    "evidence": "Documented WMI class MSPower_DeviceEnable. Many modern adapters also have driver-level 'Green Ethernet'/'Energy Efficient Ethernet' options configured in the adapter's Advanced tab (not changed here).",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Network", "Latency" ],
+    "conditions": { "requiresActiveNetworkAdapter": true },
+    "actions": [
+      { "$type": "devicePower", "deviceInstanceId": "{ActiveNetworkAdapter}", "deviceName": "Active network adapter", "allowPowerOff": false }
+    ]
+  },
+  {
+    "id": "net.throttlingindex.disable",
+    "name": "MMCSS NetworkThrottlingIndex: disabled (expert)",
+    "category": "Network",
+    "description": "Removes the multimedia network packet-processing limit.",
+    "mechanism": "Sets NetworkThrottlingIndex=0xFFFFFFFF under ...\\Multimedia\\SystemProfile. While MMCSS-registered multimedia playback is active, Windows limits non-multimedia packet processing to this many packets per millisecond (default 10).",
+    "benefit": "May help sustained high-bandwidth transfers while audio/video is playing.",
+    "drawback": "Can increase CPU/DPC time under heavy network load and cause audio glitches. It does NOT reduce ping: it cannot change ISP routing, distance to the server, or Wi-Fi conditions.",
+    "recommendedFor": "Only for users measuring a specific throughput problem during media playback.",
+    "evidence": "Introduced with Windows Vista MMCSS (KB 948066). Independent testing shows no measurable latency benefit for online games on modern Windows. Not included in any profile.",
+    "risk": "Expert",
+    "restart": "Restart",
+    "impacts": [ "Network" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile", "name": "NetworkThrottlingIndex", "kind": "DWord", "value": "0xFFFFFFFF" }
+    ]
+  },
+  {
+    "id": "net.tcpackfrequency",
+    "name": "TCP: acknowledge every segment on the active interface (expert)",
+    "category": "Network",
+    "description": "Disables TCP delayed ACK for the active adapter's interface.",
+    "mechanism": "Sets TcpAckFrequency=1 under HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\{active interface GUID}. Windows then ACKs each TCP segment instead of every second segment or after 200 ms.",
+    "benefit": "Can reduce latency for TCP request/response traffic (some MMOs, game launchers, remote tools). Most fast-paced online games use UDP, where this has no effect.",
+    "drawback": "More ACK packets and slightly more CPU/network overhead. Applies only to the adapter active when applied.",
+    "recommendedFor": "Expert users testing a TCP-based game.",
+    "evidence": "Microsoft KB 328890 documents TcpAckFrequency. TCPNoDelay is intentionally not offered: Winsock applications set TCP_NODELAY themselves and the registry value is not honoured for them.",
+    "risk": "Expert",
+    "restart": "Restart",
+    "impacts": [ "Latency", "Network" ],
+    "conditions": { "requiresActiveNetworkAdapter": true },
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\\{ActiveInterfaceGuid}", "name": "TcpAckFrequency", "kind": "DWord", "value": "1" }
+    ]
+  }
+]

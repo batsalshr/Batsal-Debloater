@@ -1,0 +1,141 @@
+[
+  {
+    "id": "valorant", "name": "VALORANT",
+    "processNames": [ "VALORANT-Win64-Shipping.exe" ],
+    "relativeExePaths": [ "ShooterGame\\Binaries\\Win64\\VALORANT-Win64-Shipping.exe" ],
+    "uninstallNameMatches": [ "VALORANT" ],
+    "knownInstallPaths": [ "C:\\Riot Games\\VALORANT\\live" ],
+    "antiCheat": "Riot Vanguard (kernel). This app never touches game files, the anti-cheat or the game process.",
+    "engine": "Unreal Engine 4 (DirectX 11)",
+    "bound": "Usually CPU-bound at high frame rates.",
+    "recommendations": [
+      "Run in Fullscreen and enable NVIDIA Reflex Low Latency (On or On + Boost) — the in-game option is the lowest-latency choice.",
+      "Cap FPS a few frames below a level your PC sustains (use the in-game limiter) for stable frame times; with VRR cap ~3 FPS below refresh.",
+      "Material/texture quality matter less for FPS than 'Improve Clarity', 'Bloom' and 'Distortion' — disable these first on weak GPUs.",
+      "Close browsers and launchers: VALORANT's frame time is sensitive to background CPU load."
+    ],
+    "lowEndSettings": [ "Display mode: Fullscreen", "Material/Texture/Detail quality: Low", "Anti-aliasing: None or MSAA 2x", "Anisotropic filtering: 1x–4x", "Improve Clarity/Bloom/Distortion/Shadows: Off" ],
+    "highEndSettings": [ "Display mode: Fullscreen", "NVIDIA Reflex: On + Boost", "Limit FPS: refresh rate or slightly above for consistent pacing", "MSAA 4x if GPU headroom remains" ]
+  },
+  {
+    "id": "fortnite", "name": "Fortnite",
+    "processNames": [ "FortniteClient-Win64-Shipping.exe" ],
+    "relativeExePaths": [ "FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe" ],
+    "epicAppName": "Fortnite",
+    "uninstallNameMatches": [ "Fortnite" ],
+    "launchUri": "com.epicgames.launcher://apps/Fortnite?action=launch&silent=true",
+    "antiCheat": "Easy Anti-Cheat / BattlEye. No game files or processes are modified.",
+    "engine": "Unreal Engine 5 (DirectX 11 / DirectX 12 / Performance mode)",
+    "bound": "Performance mode is CPU-friendly; DX12 with Nanite/Lumen is heavily GPU-bound.",
+    "recommendations": [
+      "Low-end PCs: use Rendering Mode 'Performance – Lower Graphical Fidelity'; it greatly reduces CPU/GPU load.",
+      "DX12 compiles shaders during the first matches — expect stutter that disappears afterwards (don't clear the shader cache unnecessarily).",
+      "Enable NVIDIA Reflex / AMD Anti-Lag in the game for lower latency.",
+      "Use the in-game frame-rate limit slightly below what you can sustain."
+    ],
+    "lowEndSettings": [ "Rendering mode: Performance", "3D resolution: 75–100%", "View distance: Medium", "Meshes: Low", "Textures: Low" ],
+    "highEndSettings": [ "Rendering mode: DirectX 12", "NVIDIA Reflex: On + Boost", "Nanite/Lumen only if FPS stays above the refresh rate", "Frame rate limit: refresh rate" ]
+  },
+  {
+    "id": "cs2", "name": "Counter-Strike 2",
+    "processNames": [ "cs2.exe" ],
+    "relativeExePaths": [ "game\\bin\\win64\\cs2.exe" ],
+    "steamAppId": 730,
+    "launchUri": "steam://rungameid/730",
+    "antiCheat": "Valve Anti-Cheat (VAC). No game files are modified.",
+    "engine": "Source 2 (DirectX 11)",
+    "bound": "Mostly CPU-bound; benefits from fast single-thread performance and memory.",
+    "recommendations": [
+      "Use 'Fullscreen' mode and enable NVIDIA Reflex in Video settings.",
+      "Boost Player Contrast: Enabled; Shader/particle detail: Low improves frame times on weak GPUs.",
+      "CS2 1% lows are very sensitive to background CPU load and RAM speed (enable XMP/EXPO in firmware — not changed by this app).",
+      "Use fps_max to cap slightly above your refresh rate or ~3 FPS below it with VRR."
+    ],
+    "lowEndSettings": [ "Shader detail: Low", "Particle detail: Low", "Texture filtering: Bilinear", "MSAA: None/2x", "FidelityFX Super Resolution: Quality" ],
+    "highEndSettings": [ "NVIDIA Reflex: Enabled + Boost", "MSAA 4x", "Multisampling AA instead of CMAA2 for clarity" ]
+  },
+  {
+    "id": "apex", "name": "Apex Legends",
+    "processNames": [ "r5apex_dx12.exe", "r5apex.exe" ],
+    "relativeExePaths": [ "r5apex_dx12.exe", "r5apex.exe" ],
+    "steamAppId": 1172470,
+    "uninstallNameMatches": [ "Apex Legends" ],
+    "launchUri": "steam://rungameid/1172470",
+    "antiCheat": "Easy Anti-Cheat. No game files are modified.",
+    "engine": "Source-derived (DirectX 11/12)",
+    "bound": "Mixed; often CPU-bound at high refresh rates.",
+    "recommendations": [
+      "Enable NVIDIA Reflex in Video settings.",
+      "Use the game's FPS cap (fps_max launch option) slightly below your sustained FPS for consistent frame times.",
+      "Texture streaming budget should fit within VRAM to avoid stutter."
+    ],
+    "lowEndSettings": [ "Adaptive resolution FPS target: 60", "Texture streaming budget: within VRAM", "Ambient occlusion: Disabled", "Volumetric lighting: Disabled", "Spot shadows: Disabled" ],
+    "highEndSettings": [ "NVIDIA Reflex: Enabled + Boost", "V-Sync: Off (use VRR)", "Texture streaming budget: High if VRAM allows" ]
+  },
+  {
+    "id": "pubg", "name": "PUBG: BATTLEGROUNDS",
+    "processNames": [ "TslGame.exe" ],
+    "relativeExePaths": [ "TslGame\\Binaries\\Win64\\TslGame.exe" ],
+    "steamAppId": 578080,
+    "launchUri": "steam://rungameid/578080",
+    "antiCheat": "BattlEye / Wellbia. No game files are modified.",
+    "engine": "Unreal Engine 4 (DirectX 11)",
+    "bound": "CPU-bound in late-game circles; GPU-bound at high resolutions.",
+    "recommendations": [
+      "View distance has a strong CPU impact; textures mainly need VRAM.",
+      "Enable NVIDIA Reflex if available in your version.",
+      "Keep at least 16 GB RAM free of background apps for consistent frame times."
+    ],
+    "lowEndSettings": [ "Overall quality: Very Low", "Textures: Medium (if ≥4 GB VRAM)", "View distance: Low", "Anti-aliasing: Very Low", "Post-processing/Shadows/Effects: Very Low" ],
+    "highEndSettings": [ "Textures: Ultra", "View distance: Ultra", "Anti-aliasing: Ultra", "Post-processing: Low for visibility" ]
+  },
+  {
+    "id": "cod", "name": "Call of Duty",
+    "processNames": [ "cod.exe", "cod24-cod.exe", "BlackOps6.exe", "ModernWarfare.exe" ],
+    "relativeExePaths": [ "cod.exe" ],
+    "steamAppId": 1938090,
+    "uninstallNameMatches": [ "Call of Duty" ],
+    "launchUri": "steam://rungameid/1938090",
+    "antiCheat": "RICOCHET (kernel). No game files or processes are modified.",
+    "engine": "IW engine (DirectX 12)",
+    "bound": "GPU-bound at high settings; CPU-bound in large modes at high refresh rates.",
+    "recommendations": [
+      "First launch compiles shaders — let it finish before benchmarking.",
+      "Keep VRAM usage target ≤90% in the game's settings to avoid stutter.",
+      "Enable NVIDIA Reflex or AMD Anti-Lag.",
+      "Use DLSS/FSR/XeSS in Quality mode on GPU-bound systems."
+    ],
+    "lowEndSettings": [ "Upscaling: FSR/DLSS/XeSS Quality or Balanced", "Texture resolution: Low/Normal", "Shadow quality: Low", "Particle quality: Low", "On-demand texture streaming: Off" ],
+    "highEndSettings": [ "NVIDIA Reflex: On + Boost", "VRAM scale target: 80–90%", "Frame-rate limit: refresh rate" ]
+  },
+  {
+    "id": "minecraft-java", "name": "Minecraft: Java Edition",
+    "processNames": [ "javaw.exe" ],
+    "uninstallNameMatches": [ "Minecraft Launcher" ],
+    "antiCheat": "None (server-side anti-cheat only).",
+    "engine": "Java / OpenGL",
+    "bound": "Usually CPU-bound (chunk generation, entities).",
+    "recommendations": [
+      "Allocate 4–8 GB to the game in the launcher; more is not better and can increase GC pauses.",
+      "Sodium (Fabric) dramatically improves FPS and frame times; install mods only from trusted sources.",
+      "Render distance is the biggest performance setting.",
+      "Set the GPU preference for javaw.exe to High performance on laptops with hybrid graphics."
+    ],
+    "lowEndSettings": [ "Render distance: 6–8 chunks", "Graphics: Fast", "Smooth lighting: Off", "Clouds: Off", "Particles: Minimal" ],
+    "highEndSettings": [ "Render distance: 16–32 chunks", "Simulation distance: 8–12", "Shaders only with headroom" ]
+  },
+  {
+    "id": "minecraft-bedrock", "name": "Minecraft (Bedrock / Windows)",
+    "processNames": [ "Minecraft.Windows.exe" ],
+    "antiCheat": "None.",
+    "engine": "Bedrock (DirectX 11/12)",
+    "bound": "Mixed.",
+    "recommendations": [
+      "Use Settings › Video › Render distance as the main performance setting.",
+      "Disable 'Fancy graphics' and 'Beautiful skies' on low-end GPUs.",
+      "Enable V-Sync off + in-game frame cap for lower latency."
+    ],
+    "lowEndSettings": [ "Render distance: 8–10", "Fancy graphics: Off", "Smooth lighting: Off" ],
+    "highEndSettings": [ "Render distance: 24+", "Ray tracing only on RTX GPUs with DLSS" ]
+  }
+]

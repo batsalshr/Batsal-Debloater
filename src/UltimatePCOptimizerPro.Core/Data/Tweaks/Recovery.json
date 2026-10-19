@@ -1,0 +1,19 @@
+[
+  {
+    "id": "recovery.restorepoint.frequency.unlimited",
+    "name": "Allow restore points more often than once per 24 hours",
+    "category": "Recovery",
+    "description": "Lets Windows create a new restore point for every optimization instead of skipping requests made within 24 hours of the last one.",
+    "mechanism": "Sets SystemRestorePointCreationFrequency=0 under HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\SystemRestore. Windows skips a restore point if one was created within this many minutes (default 1440 when the value is absent).",
+    "benefit": "Every optimization can be protected by its own verified restore point, so the app does not block changes because of throttling.",
+    "drawback": "More restore points use more of the System Protection disk quota; Windows deletes the oldest points when the quota is full.",
+    "recommendedFor": "Users who apply optimizations in several sessions per day.",
+    "evidence": "Documented by Microsoft in the SRSetRestorePoint / CreateRestorePoint documentation. This app never changes it without an explicit request.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\SystemRestore", "name": "SystemRestorePointCreationFrequency", "kind": "DWord", "value": "0" }
+    ]
+  }
+]

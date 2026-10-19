@@ -1,0 +1,90 @@
+[
+  {
+    "id": "input.mouse.acceleration.disable",
+    "name": "Disable 'Enhance pointer precision' (mouse acceleration)",
+    "category": "Input",
+    "description": "Makes desktop cursor movement proportional to physical mouse movement.",
+    "mechanism": "Sets MouseSpeed, MouseThreshold1 and MouseThreshold2 to \"0\" under HKCU\\Control Panel\\Mouse and applies them to the running session with SystemParametersInfo(SPI_SETMOUSE).",
+    "benefit": "Consistent aim/muscle memory in games that use the Windows cursor (many menus, RTS/MOBA games, some older shooters).",
+    "drawback": "The cursor may feel slower at low speeds; adjust pointer speed or mouse DPI. Games using raw input are unaffected either way.",
+    "recommendedFor": "Competitive players.",
+    "evidence": "Standard Mouse Properties setting. It does not change input latency — only the acceleration curve.",
+    "risk": "Low",
+    "restart": "None",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseSpeed", "kind": "String", "value": "0", "refresh": "Mouse" },
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold1", "kind": "String", "value": "0", "refresh": "Mouse" },
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Mouse", "name": "MouseThreshold2", "kind": "String", "value": "0", "refresh": "Mouse" }
+    ]
+  },
+  {
+    "id": "input.stickykeys.hotkey.disable",
+    "name": "Disable the Sticky Keys shortcut (Shift ×5)",
+    "category": "Input",
+    "description": "Stops pressing Shift five times from opening the Sticky Keys prompt mid-game.",
+    "mechanism": "Clears only the hotkey bit (0x4) of HKCU\\Control Panel\\Accessibility\\StickyKeys\\Flags. Other bits are preserved, so Sticky Keys stays on if you actively use it.",
+    "benefit": "Prevents the game from being minimised by the accessibility prompt.",
+    "drawback": "The keyboard shortcut no longer toggles Sticky Keys; use Settings › Accessibility › Keyboard instead.",
+    "recommendedFor": "All gamers who don't use the shortcut.",
+    "evidence": "Flag bits documented for STICKYKEYS (SKF_HOTKEYACTIVE = 0x4). Read at sign-in.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registryFlags", "hive": "HKCU", "path": "Control Panel\\Accessibility\\StickyKeys", "name": "Flags", "clearBits": 4, "defaultValue": 510 }
+    ]
+  },
+  {
+    "id": "input.togglekeys.hotkey.disable",
+    "name": "Disable the Toggle Keys shortcut (hold Num Lock 5 s)",
+    "category": "Input",
+    "description": "Stops holding Num Lock from turning on Toggle Keys.",
+    "mechanism": "Clears the hotkey bit (0x4) of HKCU\\Control Panel\\Accessibility\\ToggleKeys\\Flags, preserving other bits.",
+    "benefit": "Avoids an accessibility prompt interrupting games.",
+    "drawback": "The shortcut no longer works; Toggle Keys remains available in Settings.",
+    "recommendedFor": "Gamers who don't use the shortcut.",
+    "evidence": "TOGGLEKEYS flags (TKF_HOTKEYACTIVE = 0x4). Read at sign-in.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registryFlags", "hive": "HKCU", "path": "Control Panel\\Accessibility\\ToggleKeys", "name": "Flags", "clearBits": 4, "defaultValue": 62 }
+    ]
+  },
+  {
+    "id": "input.filterkeys.hotkey.disable",
+    "name": "Disable the Filter Keys shortcut (hold right Shift 8 s)",
+    "category": "Input",
+    "description": "Stops holding right Shift from turning on Filter Keys, which ignores brief keystrokes.",
+    "mechanism": "Clears the hotkey bit (0x4) of HKCU\\Control Panel\\Accessibility\\Keyboard Response\\Flags, preserving other bits.",
+    "benefit": "Prevents accidentally enabling Filter Keys, which makes key presses appear to be ignored in games.",
+    "drawback": "The shortcut no longer works; Filter Keys remains available in Settings.",
+    "recommendedFor": "Gamers who don't use the shortcut.",
+    "evidence": "FILTERKEYS flags (FKF_HOTKEYACTIVE = 0x4). Read at sign-in.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registryFlags", "hive": "HKCU", "path": "Control Panel\\Accessibility\\Keyboard Response", "name": "Flags", "clearBits": 4, "defaultValue": 126 }
+    ]
+  },
+  {
+    "id": "input.keyboard.repeat.fast",
+    "name": "Fastest keyboard repeat delay and rate",
+    "category": "Input",
+    "description": "Sets the shortest repeat delay and the fastest repeat rate for held keys.",
+    "mechanism": "Sets KeyboardDelay=\"0\" (≈250 ms) and KeyboardSpeed=\"31\" (≈30 repeats/s) under HKCU\\Control Panel\\Keyboard — the extremes of the Keyboard Properties sliders.",
+    "benefit": "Held keys repeat sooner in text fields and games that rely on OS key repeat.",
+    "drawback": "Personal preference; may cause accidental repeated characters when typing. Games using raw/DirectInput are unaffected.",
+    "recommendedFor": "Users who prefer fast key repeat.",
+    "evidence": "Documented Control Panel values. Not an input-latency change.",
+    "risk": "Low",
+    "restart": "SignOut",
+    "impacts": [ "Convenience" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Keyboard", "name": "KeyboardDelay", "kind": "String", "value": "0" },
+      { "$type": "registry", "hive": "HKCU", "path": "Control Panel\\Keyboard", "name": "KeyboardSpeed", "kind": "String", "value": "31" }
+    ]
+  }
+]

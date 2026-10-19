@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="UltimatePCOptimizerPro.Views.RegistryTweaksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="How registry tweaks are applied" Style="{StaticResource H2}" />
+                    <TextBlock Style="{StaticResource Body}" Text="Every value is written with the Windows registry API in the correct 64-bit/32-bit view. Before writing, the app records whether the key and value existed, the exact value type and data, and exports the key to a .reg file. Restore puts back the exact previous value (or removes values and keys the app created). Writes to security, update, boot and sign-in areas are blocked in code. Tweaks that are commonly recommended online but are undocumented, outdated or harmful (e.g. TCPNoDelay, DisablePagingExecutive or LargeSystemCache) are not included." />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <v:TweakListView DataContext="{Binding Tweaks}" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

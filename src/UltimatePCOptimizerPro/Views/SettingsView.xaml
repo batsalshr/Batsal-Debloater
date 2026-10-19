@@ -1,0 +1,79 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel MaxWidth="980" HorizontalAlignment="Left">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Safety &amp; recovery" Style="{StaticResource H2}" />
+                    <TextBlock Text="Restore point policy" Style="{StaticResource Body}" Margin="0,0,0,4" />
+                    <ComboBox ItemsSource="{Binding Policies}" SelectedItem="{Binding Policy}" HorizontalAlignment="Left" MinWidth="320">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumDisplay}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,12" Text="Default: block any change unless a new restore point is verified. The override option only appears per operation, requires explicit consent, and only when every change has a verified app-level rollback." />
+                    <CheckBox Content="Automatically roll back the whole batch if any change fails" IsChecked="{Binding AutoRollback}" Margin="0,4" />
+                    <CheckBox Content="Also export touched registry keys to .reg files with each backup" IsChecked="{Binding ExportReg}" Margin="0,4" />
+                    <CheckBox Content="Review every change before it is applied (always on — cannot be disabled)" IsChecked="True" Margin="0,4" IsEnabled="False" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Scanning &amp; monitoring" Style="{StaticResource H2}" />
+                    <CheckBox Content="Scan hardware when the app starts" IsChecked="{Binding ScanOnStartup}" Margin="0,4" />
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Dashboard refresh interval" Style="{StaticResource Body}" Width="230" VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding RefreshRates}" SelectedItem="{Binding RefreshMs}" ItemStringFormat="{}{0} ms" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Automatic hardware rescan (minutes, 0 = off)" Style="{StaticResource Body}" Width="230" VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding RescanIntervals}" SelectedItem="{Binding RescanMinutes}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Default ping target" Style="{StaticResource Body}" Width="230" VerticalAlignment="Center" />
+                        <TextBox Text="{Binding PingTarget}" MinWidth="200" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Optimization &amp; benchmarks" Style="{StaticResource H2}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Default optimization profile" Style="{StaticResource Body}" Width="230" VerticalAlignment="Center" />
+                        <ComboBox ItemsSource="{Binding Profiles}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding DefaultProfile}" MinWidth="220" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="Benchmark history to keep" Style="{StaticResource Body}" Width="230" VerticalAlignment="Center" />
+                        <TextBox Text="{Binding BenchmarkLimit}" MinWidth="80" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Appearance, logging &amp; notifications" Style="{StaticResource H2}" />
+                    <CheckBox Content="Purple accent highlights (applies after restarting the app)" IsChecked="{Binding PurpleAccents}" Margin="0,4" />
+                    <CheckBox Content="Detailed (debug) logging" IsChecked="{Binding DetailedLogging}" Margin="0,4" />
+                    <CheckBox Content="Flash the taskbar button when an operation finishes in the background" IsChecked="{Binding Notifications}" Margin="0,4" />
+                </StackPanel>
+            </Border>
+            <WrapPanel Margin="0,0,0,12">
+                <Button Content="Save settings" Command="{Binding SaveCommand}" Style="{StaticResource PrimaryButton}" />
+                <Button Content="Export settings" Command="{Binding ExportCommand}" />
+                <Button Content="Import settings" Command="{Binding ImportCommand}" />
+                <Button Content="Reset to safe defaults" Command="{Binding ResetCommand}" Style="{StaticResource DangerButton}" />
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Caption}" VerticalAlignment="Center" Foreground="{StaticResource CyanBrush}" />
+            </WrapPanel>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="About" Style="{StaticResource H2}" />
+                    <TextBlock Style="{StaticResource Body}"><Run Text="ULTIMATE PC OPTIMIZER PRO " /><Run Text="{Binding Version, Mode=OneWay}" /></TextBlock>
+                    <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0"><Run Text="Data folder (settings, backups, logs, benchmarks): " /><Run Text="{Binding DataFolder, Mode=OneWay}" /></TextBlock>
+                    <Button Content="Open data folder" Command="{Binding OpenDataFolderCommand}" Style="{StaticResource SmallButton}" HorizontalAlignment="Left" Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "gpu.hags.enable",
+    "name": "Enable Hardware-Accelerated GPU Scheduling (HAGS)",
+    "category": "Gpu",
+    "description": "Lets the GPU manage its own work queue instead of the CPU-side scheduler.",
+    "mechanism": "Sets HwSchMode=2 under HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers — the value behind Settings › Display › Graphics › 'Hardware-accelerated GPU scheduling'. 1 = off, 2 = on.",
+    "benefit": "Can slightly reduce CPU overhead and latency; it is required for NVIDIA DLSS Frame Generation.",
+    "drawback": "Gains vary by game and driver (often within ±2%); some older drivers showed stutter or capture problems. Silently ignored when the GPU/driver does not support it.",
+    "recommendedFor": "WDDM 2.7+ GPUs: NVIDIA GTX 10-series and newer, AMD RX 5000 and newer with current drivers, Intel Arc.",
+    "evidence": "Microsoft DirectX Developer Blog, 'Hardware Accelerated GPU Scheduling' (2020). Verify after restart in Settings › Display › Graphics.",
+    "risk": "Medium",
+    "restart": "Restart",
+    "impacts": [ "Latency", "FrameTime" ],
+    "conditions": { "minBuild": 19041, "requiresDedicatedGpu": true },
+    "tiers": [ "MidRange", "HighEnd" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers", "name": "HwSchMode", "kind": "DWord", "value": "2" }
+    ]
+  },
+  {
+    "id": "gpu.mpo.disable",
+    "name": "Disable Multiplane Overlay (troubleshooting only)",
+    "category": "Gpu",
+    "description": "Turns off DWM multiplane overlays to work around flicker or stutter on some multi-monitor setups.",
+    "mechanism": "Sets OverlayTestMode=5 under HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm, which tells the Desktop Window Manager not to use hardware overlay planes.",
+    "benefit": "Fixes flickering, black screens or periodic stutter caused by MPO driver bugs in specific configurations.",
+    "drawback": "Disables a feature that normally saves power and can lower latency. Not a performance tweak — only use it if you have the symptoms. Recent Windows 11 builds may ignore this value.",
+    "recommendedFor": "Troubleshooting multi-monitor flicker/stutter only.",
+    "evidence": "Published by NVIDIA as a troubleshooting step (NVIDIA support article 5157, 2022).",
+    "risk": "Expert",
+    "restart": "Restart",
+    "impacts": [ "FrameTime" ],
+    "actions": [
+      { "$type": "registry", "hive": "HKLM", "path": "SOFTWARE\\Microsoft\\Windows\\Dwm", "name": "OverlayTestMode", "kind": "DWord", "value": "5" }
+    ]
+  }
+]

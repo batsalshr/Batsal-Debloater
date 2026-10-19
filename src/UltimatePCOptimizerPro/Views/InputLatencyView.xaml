@@ -1,0 +1,40 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.InputLatencyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Input and display configuration" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Info}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Detected input devices" Style="{StaticResource H2}" />
+                        <ItemsControl ItemsSource="{Binding Devices}" ItemTemplate="{StaticResource InfoRowTemplate}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Latency: mechanisms vs measurements" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding Guidance}" ItemTemplate="{StaticResource BulletTemplate}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Input settings" Style="{StaticResource H2}" />
+                    <v:TweakListView DataContext="{Binding Tweaks}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

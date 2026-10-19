@@ -1,0 +1,74 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.StartupView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <WrapPanel>
+                        <Button Content="Refresh" Command="{Binding ReloadCommand}" />
+                        <Button Content="Open Task Manager › Startup apps" Command="{Binding OpenTaskManagerCommand}" />
+                    </WrapPanel>
+                    <TextBlock Text="{Binding Summary}" Style="{StaticResource Caption}" Margin="0,8,0,0" />
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Caption}" Foreground="{StaticResource CyanBrush}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Startup applications" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding Items}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource InnerCard}" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                                <TextBlock Style="{StaticResource Caption}" Margin="10,0,0,0" VerticalAlignment="Center"><Run Text="{Binding Publisher, Mode=OneWay}" /><Run Text="  " /><Run Text="{Binding Description, Mode=OneWay}" /></TextBlock>
+                                                <Border Style="{StaticResource Badge}" Background="{StaticResource WarningSoftBrush}" Margin="8,0,0,0" Visibility="{Binding Missing, Converter={StaticResource BoolToVis}}">
+                                                    <TextBlock Text="Target file missing" Style="{StaticResource BadgeText}" Foreground="{StaticResource WarningBrush}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Command}" Style="{StaticResource Mono}" FontSize="11" Margin="0,3,0,0" />
+                                            <TextBlock Style="{StaticResource Caption}"><Run Text="{Binding Location, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding Usage, Mode=OneWay}" Foreground="{StaticResource CyanBrush}" /></TextBlock>
+                                        </StackPanel>
+                                        <Button Grid.Column="1" Style="{StaticResource SwitchButton}" Tag="{Binding Enabled}" VerticalAlignment="Center" ToolTip="On = starts with Windows"
+                                                Command="{Binding DataContext.ToggleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Scheduled tasks that start at logon/boot (non-Microsoft)" Style="{StaticResource H2}" />
+                    <ItemsControl ItemsSource="{Binding LogonTasks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding TaskPath}" Style="{StaticResource Value}" />
+                                        <TextBlock Style="{StaticResource Caption}"><Run Text="{Binding Author, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding Action, Mode=OneWay}" /></TextBlock>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Style="{StaticResource SwitchButton}" Tag="{Binding Enabled}"
+                                            Command="{Binding DataContext.ToggleTaskCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="None found." Style="{StaticResource Caption}" Visibility="{Binding LogonTasks.Count, Converter={StaticResource NullToVis}, ConverterParameter=invert}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

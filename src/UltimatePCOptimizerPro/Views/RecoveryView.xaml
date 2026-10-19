@@ -1,0 +1,92 @@
+<UserControl x:Class="UltimatePCOptimizerPro.Views.RecoveryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,12,20">
+        <StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="System Protection" Style="{StaticResource H2}" />
+                        <DockPanel>
+                            <Ellipse Width="10" Height="10" Margin="0,4,8,0" VerticalAlignment="Top" DockPanel.Dock="Left">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="{StaticResource WarningBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProtectionTone}" Value="Success"><Setter Property="Fill" Value="{StaticResource SuccessBrush}" /></DataTrigger>
+                                            <DataTrigger Binding="{Binding ProtectionTone}" Value="Danger"><Setter Property="Fill" Value="{StaticResource DangerBrush}" /></DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding ProtectionText}" Style="{StaticResource Value}" TextWrapping="Wrap" />
+                        </DockPanel>
+                        <TextBlock Text="{Binding FrequencyText}" Style="{StaticResource Caption}" Margin="18,6,0,0" />
+                        <TextBlock Text="{Binding Instructions}" Style="{StaticResource Body}" FontSize="12.5" Margin="0,12,0,0" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="This app never changes the restore point frequency on its own. If you want a new restore point for every optimization, enable 'Allow restore points more often than once per 24 hours' on the Windows Tweaks page (Recovery category)." />
+                        <WrapPanel Margin="0,12,0,0">
+                            <Button Content="System Protection settings" Command="{Binding OpenProtectionCommand}" />
+                            <Button Content="Open Windows System Restore" Command="{Binding OpenSystemRestoreCommand}" />
+                            <Button Content="&#xE72C;" FontFamily="{StaticResource IconFont}" Command="{Binding ReloadCommand}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Create manual restore point" Style="{StaticResource H2}" />
+                        <TextBlock Style="{StaticResource Body}" Text="The name will follow the format ULTIMATE-PC-OPTIMIZER | Manual - name | yyyy-MM-dd | HH-mm-ss using this PC's local time. Creation is verified by enumerating Windows restore points afterwards." />
+                        <TextBox Text="{Binding ManualName}" Margin="0,12,0,0" />
+                        <Button Content="Create restore point" Command="{Binding CreateManualCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Restore points requested by this app" Style="{StaticResource H2}" />
+                    <DataGrid ItemsSource="{Binding AppPoints}" MaxHeight="360">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Restore point name" Binding="{Binding Name}" Width="2*" />
+                            <DataGridTextColumn Header="Date" Binding="{Binding Date}" Width="90" />
+                            <DataGridTextColumn Header="Time" Binding="{Binding Time}" Width="120" />
+                            <DataGridTextColumn Header="Operation" Binding="{Binding Operation}" Width="150" />
+                            <DataGridTemplateColumn Header="Verification" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource Badge}" Background="{Binding Status, Converter={StaticResource StatusBrush}, ConverterParameter=soft}">
+                                            <TextBlock Text="{Binding Status}" Style="{StaticResource BadgeText}" Foreground="{Binding Status, Converter={StaticResource StatusBrush}}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridCheckBoxColumn Header="Rollback available" Binding="{Binding RollbackAvailable}" Width="120" />
+                            <DataGridTextColumn Header="Details" Binding="{Binding Message}" Width="2*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="All Windows restore points" Style="{StaticResource H2}" />
+                    <TextBlock Text="{Binding ListNote}" Style="{StaticResource Caption}" Margin="0,0,0,8" />
+                    <DataGrid ItemsSource="{Binding WindowsPoints}" MaxHeight="360">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding SequenceNumber}" Width="50" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
+                            <DataGridTextColumn Header="Created" Binding="{Binding CreationTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Width="150" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding TypeDisplay}" Width="150" />
+                            <DataGridCheckBoxColumn Header="By this app" Binding="{Binding CreatedByThisApp, Mode=OneWay}" Width="90" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,110 @@
+<Application x:Class="UltimatePCOptimizerPro.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:UltimatePCOptimizerPro.Converters"
+             xmlns:vm="clr-namespace:UltimatePCOptimizerPro.ViewModels"
+             xmlns:v="clr-namespace:UltimatePCOptimizerPro.Views"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Themes/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
+            <conv:InverseBoolConverter x:Key="InverseBool" />
+            <conv:NullToVisibilityConverter x:Key="NullToVis" />
+            <conv:BytesConverter x:Key="Bytes" />
+            <conv:StatusBrushConverter x:Key="StatusBrush" />
+            <conv:EnumDisplayConverter x:Key="EnumDisplay" />
+
+            <!-- ViewModel → View mapping used by the main content host -->
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}"><v:DashboardView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PcSpecsViewModel}"><v:PcSpecsView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ScannerViewModel}"><v:ScannerView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SmartOptimizeViewModel}"><v:SmartOptimizeView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:TierAnalysisViewModel}"><v:TierAnalysisView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:FpsBoosterViewModel}"><v:FpsBoosterView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CpuViewModel}"><v:CpuView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:GpuViewModel}"><v:GpuView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RamViewModel}"><v:RamView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:WindowsTweaksViewModel}"><v:WindowsTweaksView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RegistryTweaksViewModel}"><v:RegistryTweaksView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DebloatViewModel}"><v:DebloaterView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ServicesViewModel}"><v:ServicesView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StartupViewModel}"><v:StartupView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NetworkViewModel}"><v:NetworkView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InputLatencyViewModel}"><v:InputLatencyView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:GameProfilesViewModel}"><v:GameProfilesView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BenchmarkViewModel}"><v:BenchmarksView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RestorePointsViewModel}"><v:RecoveryView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BackupRecoveryViewModel}"><v:BackupRecoveryView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:HistoryViewModel}"><v:HistoryView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><v:SettingsView /></DataTemplate>
+
+            <!-- Reusable label/value row list -->
+            <DataTemplate x:Key="InfoRowTemplate">
+                <Grid Margin="0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="210" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Label}" Style="{StaticResource Body}" FontSize="12.5" />
+                    <TextBlock x:Name="Val" Grid.Column="1" Text="{Binding Value}" Style="{StaticResource Value}" FontSize="12.5" />
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Unavailable}" Value="True">
+                        <Setter TargetName="Val" Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                        <Setter TargetName="Val" Property="FontStyle" Value="Italic" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Tone}" Value="Warning">
+                        <Setter TargetName="Val" Property="Foreground" Value="{StaticResource WarningBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Tone}" Value="Success">
+                        <Setter TargetName="Val" Property="Foreground" Value="{StaticResource SuccessBrush}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Tone}" Value="Danger">
+                        <Setter TargetName="Val" Property="Foreground" Value="{StaticResource DangerBrush}" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate x:Key="BulletTemplate">
+                <Grid Margin="0,3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Ellipse Width="5" Height="5" Fill="{StaticResource AccentBrush}" VerticalAlignment="Top" Margin="0,7,0,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding}" Style="{StaticResource Body}" />
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="BottleneckTemplate">
+                <Border Style="{StaticResource InnerCard}" Margin="0,0,0,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border CornerRadius="2" Background="{Binding Severity, Converter={StaticResource StatusBrush}}" />
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource Value}" FontWeight="SemiBold" />
+                                <Border Style="{StaticResource Badge}" Margin="8,0,0,0" Background="{Binding Severity, Converter={StaticResource StatusBrush}, ConverterParameter=soft}">
+                                    <TextBlock Text="{Binding Severity}" Style="{StaticResource BadgeText}" Foreground="{Binding Severity, Converter={StaticResource StatusBrush}}" />
+                                </Border>
+                                <Border Style="{StaticResource Badge}" Margin="6,0,0,0" Visibility="{Binding IsMeasured, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Measured" Style="{StaticResource BadgeText}" Foreground="{StaticResource TextDimBrush}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Body}" Margin="0,4,0,0" FontSize="12.5" />
+                            <TextBlock Text="{Binding Recommendation}" Style="{StaticResource Body}" Margin="0,4,0,0" FontSize="12.5" Foreground="{StaticResource CyanBrush}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
