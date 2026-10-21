@@ -34,6 +34,7 @@
             <DataTemplate DataType="{x:Type vm:DebloatViewModel}"><v:DebloaterView /></DataTemplate>
             <DataTemplate DataType="{x:Type vm:ServicesViewModel}"><v:ServicesView /></DataTemplate>
             <DataTemplate DataType="{x:Type vm:StartupViewModel}"><v:StartupView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StartupDoctorViewModel}"><v:StartupDoctorView /></DataTemplate>
             <DataTemplate DataType="{x:Type vm:NetworkViewModel}"><v:NetworkView /></DataTemplate>
             <DataTemplate DataType="{x:Type vm:InputLatencyViewModel}"><v:InputLatencyView /></DataTemplate>
             <DataTemplate DataType="{x:Type vm:GameProfilesViewModel}"><v:GameProfilesView /></DataTemplate>

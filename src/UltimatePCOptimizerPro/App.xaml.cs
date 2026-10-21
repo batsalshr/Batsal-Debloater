@@ -126,6 +126,8 @@ public partial class App : Application
         s.AddSingleton<DebloatViewModel>();
         s.AddSingleton<ServicesViewModel>();
         s.AddSingleton<StartupViewModel>();
+        s.AddSingleton<StartupDoctorService>();
+        s.AddSingleton<StartupDoctorViewModel>();
         s.AddSingleton<NetworkViewModel>();
         s.AddSingleton<InputLatencyViewModel>();
         s.AddSingleton<GameProfilesViewModel>();

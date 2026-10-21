@@ -35,6 +35,7 @@ public sealed partial class MainViewModel : ObservableObject
         new() { Title = "Windows Debloater", Icon = "", PageType = typeof(DebloatViewModel) },
         new() { Title = "Services Optimizer", Icon = "", PageType = typeof(ServicesViewModel) },
         new() { Title = "Startup Optimizer", Icon = "", PageType = typeof(StartupViewModel) },
+        new() { Title = "Fix Slow Startup", Icon = "", PageType = typeof(StartupDoctorViewModel) },
         new() { IsHeader = true, Title = "RECOVERY" },
         new() { Title = "Restore Points", Icon = "", PageType = typeof(RestorePointsViewModel) },
         new() { Title = "Backup & Recovery", Icon = "", PageType = typeof(BackupRecoveryViewModel) },
